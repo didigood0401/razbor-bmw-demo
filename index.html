@@ -3,303 +3,275 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Двигатели BMW - ремонт, контрактные ДВС, запчасти | эскиз редизайна</title>
+<title>Ремонт и продажа двигателей BMW | Разбор BMW - демо редизайна</title>
+<meta name="description" content="Ремонт двигателей BMW, контрактные ДВС, б/у запчасти моторной группы, выкуп и мехобработка. Демо нового дизайна razborbmw.msk.ru.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#111315;--s1:#191c1f;--s2:#22262a;--ink:#ecebe7;--mut:#a3a6a8;--acc:#ffb21a;--acc-ink:#111315;--m:clamp(16px,2.2vw,36px);--ease:cubic-bezier(.2,.8,.2,1)}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);font:400 17px/1.55 Geologica,system-ui,sans-serif;overflow-x:hidden}
-a{color:inherit}
-:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
-.wrap{max-width:1320px;margin:0 auto;padding:0 var(--m)}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--acc);color:var(--acc-ink);font:700 16px Geologica;padding:15px 22px;text-decoration:none;border:0;cursor:pointer;transition:transform .2s var(--ease),background .2s}
-.btn:hover{transform:translateY(-2px);background:#ffc44d}.btn:active{transform:none}
-.btn.ghost{background:var(--s2);color:var(--ink)}.btn.ghost:hover{background:#2c3136}
-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0;gap:20px}
-.brand{font:800 19px Geologica;letter-spacing:-.02em;text-decoration:none}
-.brand span{color:var(--acc)}
-nav ul{display:flex;gap:26px;list-style:none;font-size:15px}
-nav ul a{text-decoration:none;color:var(--mut);transition:color .2s}
-nav ul a:hover{color:var(--ink)}
-h1{font:800 clamp(34px,5vw,72px)/1 Geologica;letter-spacing:-.04em;max-width:15ch}
-h2{font:800 clamp(28px,3.6vw,50px)/1.02 Geologica;letter-spacing:-.035em;margin-bottom:14px}
-.sub{color:var(--mut);max-width:58ch;margin-bottom:38px}
-section{padding:clamp(90px,11vw,170px) 0 0}
-
-/* HERO */
-.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,4vw,64px);padding-top:clamp(30px,5vw,70px);align-items:center}
-.hero .lead{color:var(--mut);font-size:19px;max-width:46ch;margin:22px 0 30px}
-.codes{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.codes button{background:var(--s1);color:var(--ink);border:0;padding:10px 14px;font:700 16px Geologica;cursor:pointer;transition:background .2s,color .2s,transform .2s}
-.codes button:hover{background:var(--s2)}
-.codes button.on{background:var(--acc);color:var(--acc-ink)}
-.eng{background:var(--s1);padding:clamp(18px,2.4vw,30px);position:relative}
-.eng .code{font:800 clamp(64px,9vw,128px)/.85 Geologica;letter-spacing:-.05em}
-.eng .type{color:var(--mut);margin-top:8px}
-.eng svg{width:100%;height:auto;display:block;margin:10px 0 6px}
-.prices{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.prices div{background:var(--s2);padding:14px 16px}
-.prices span{display:block;color:var(--mut);font-size:14px}
-.prices b{font:800 clamp(22px,2.2vw,30px) Geologica;letter-spacing:-.02em}
-.works{margin-top:14px;color:var(--mut);font-size:15px}
-.pist{animation:pump var(--sp,1.1s) cubic-bezier(.45,0,.55,1) infinite;animation-delay:var(--d)}
-@keyframes pump{0%,100%{transform:translateY(0)}50%{transform:translateY(var(--tr,34px))}}
-.fire{animation:fire var(--sp,1.1s) linear infinite;animation-delay:var(--d);opacity:0}
-@keyframes fire{0%,6%{opacity:.95}18%,100%{opacity:0}}
-.swap{transition:opacity .35s var(--ease),transform .35s var(--ease)}
-.swap.out{opacity:0;transform:translateY(8px)}
-
-/* DIRECTIONS */
-.dir{list-style:none}
-.dir li{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:24px;align-items:center;padding:26px 20px;background:linear-gradient(var(--s1),var(--s1)) no-repeat 0 100%/0 100%;transition:background-size .5s var(--ease),padding .3s}
-.dir li:nth-child(odd){background-color:#14171a}
-.dir li:hover{background-size:100% 100%;padding-left:30px}
-.dir h3{font:700 clamp(22px,2.4vw,34px)/1.1 Geologica;letter-spacing:-.025em}
-.dir p{color:var(--mut);font-size:16px}
-.dir a{color:var(--acc);text-decoration:none;font-weight:700;white-space:nowrap}
-
-/* AVITO */
-.tabs{display:inline-flex;background:var(--s1);padding:4px;gap:4px;margin-bottom:22px}
-.tabs button{background:none;border:0;color:var(--ink);font:700 15px Geologica;padding:10px 16px;cursor:pointer}
-.tabs button.on{background:var(--ink);color:var(--bg)}
-.items{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.item{background:var(--s1);display:flex;flex-direction:column;transition:transform .3s var(--ease)}
-.item:hover{transform:translateY(-4px)}
-.item .ph{aspect-ratio:4/3;background:var(--s2);display:grid;place-items:center}
-.item .ph svg{width:62%;height:auto}
-.item .bd{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.item h4{font:700 17px/1.25 Geologica}
-.item .pr{font:800 22px Geologica;color:var(--acc)}
-.item .meta{color:var(--mut);font-size:14px}
-.item .act{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto;padding-top:10px}
-.item .act a{text-align:center;padding:11px 6px;font:700 14px Geologica;text-decoration:none;background:var(--s2);transition:background .2s}
-.item .act a:first-child{background:var(--acc);color:var(--acc-ink)}
-.item .act a:hover{filter:brightness(1.1)}
-.note{color:var(--mut);font-size:14px;margin-top:14px}
-
-/* FEED + REVIEWS */
-.two{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(24px,4vw,60px)}
-.post{background:var(--s1);padding:20px;margin-bottom:10px;display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:start}
-.post .th{aspect-ratio:1;background:var(--s2);display:grid;place-items:center;font:800 22px Geologica;color:var(--acc)}
-.post small{color:var(--mut);font-size:14px}
-.post p{margin-top:4px}
-.rev{background:var(--s1);padding:20px;margin-bottom:10px}
-.rev .st{color:var(--acc);letter-spacing:2px}
-.rev small{color:var(--mut);font-size:14px}
-/* MAP */
-.mapw{display:grid;grid-template-columns:1.4fr 1fr;gap:clamp(20px,3vw,40px);align-items:stretch}
-.map{background:#1a1d20;position:relative;min-height:380px;overflow:hidden}
-.map svg{position:absolute;inset:0;width:100%;height:100%}
-.pin{cursor:pointer}
-.pin circle.p{transition:r .25s}
-.pin:hover circle.p,.pin.on circle.p{r:11}
-.ring{animation:ring 2.2s ease-out infinite;transform-box:fill-box;transform-origin:center}
-@keyframes ring{from{transform:scale(.4);opacity:.9}to{transform:scale(2.6);opacity:0}}
-.addr{list-style:none;display:flex;flex-direction:column;gap:8px}
-.addr li{background:var(--s1);padding:18px;cursor:pointer;transition:background .2s}
-.addr li.on,.addr li:hover{background:var(--s2)}
-.addr b{display:block;font-size:18px}
-.addr span{color:var(--mut);font-size:15px}
-/* SEO */
-.seo{display:grid;grid-template-columns:1fr 1.3fr;gap:clamp(24px,4vw,60px)}
-.urls{list-style:none;font-size:15px;columns:2;column-gap:24px}
-.urls li{padding:7px 10px;break-inside:avoid;color:var(--mut)}
-.urls li:nth-child(odd){background:var(--s1)}
-.urls li b{color:#7ad38a;font-weight:700;margin-right:6px}
-/* CTA */
-.cta{margin-top:clamp(90px,11vw,170px);background:var(--acc);color:var(--acc-ink);padding:clamp(60px,8vw,110px) 0}
-.cta h2{font-size:clamp(34px,5.4vw,80px);max-width:16ch}
-.cta p{max-width:52ch;margin:10px 0 28px;font-size:19px}
-.cta .btn{background:var(--bg);color:var(--ink)}
-.cta .btn:hover{background:#000}
-footer{padding:30px 0 50px;color:var(--mut);font-size:14px}
-/* floating */
-.fab{position:fixed;right:18px;bottom:18px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
-.fab .menu{display:none;flex-direction:column;gap:6px;background:var(--s1);padding:10px;box-shadow:0 18px 40px -12px #000}
-.fab.open .menu{display:flex}
-.fab .menu a{padding:10px 14px;background:var(--s2);text-decoration:none;font-weight:700;font-size:15px}
-.fab .menu small{color:var(--mut);font-size:13px;max-width:240px}
-.reveal{opacity:1}
-.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease);transition-delay:calc(var(--i,0)*70ms)}
-.js .reveal.in{opacity:1;transform:none}
-@media(max-width:960px){
- nav ul{display:none}
- .hero,.two,.mapw,.seo{grid-template-columns:1fr}
- .items{grid-template-columns:1fr 1fr}
- .dir li{grid-template-columns:1fr;gap:6px}
- .urls{columns:1}
-}
-@media(max-width:520px){.items{grid-template-columns:1fr}.post{grid-template-columns:64px 1fr}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .reveal{opacity:1;transform:none}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/hero.webp">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
-<nav><a class="brand" href="#">Разбор<span>BMW</span>.msk</a>
- <ul><li><a href="#dir">Услуги</a></li><li><a href="#avito">Запчасти</a></li><li><a href="#feed">Работы</a></li><li><a href="#map">Адреса</a></li></ul>
- <a class="btn ghost" href="#map">Связаться</a></nav>
 
-<header class="hero">
- <div>
-  <h1 class="reveal">Двигатели BMW: ремонт, контрактные, выкуп</h1>
-  <p class="lead reveal" style="--i:1">Свой моторный цех, разборка и склад. Принимаем авто и снятые ДВС от частников и СТО со всех регионов.</p>
-  <div style="display:flex;gap:8px;flex-wrap:wrap" class="reveal" style="--i:2"><a class="btn" href="#map">Записаться на ремонт</a><a class="btn ghost" href="#avito">Запчасти с Авито</a></div>
- </div>
- <div class="eng reveal" style="--i:2" aria-live="polite">
-  <div class="codes" id="codes" role="tablist" aria-label="Выберите двигатель"></div>
-  <div class="swap" id="eswap">
-   <div class="code" id="ecode">N63</div>
-   <div class="type" id="etype"></div>
-   <svg id="esvg" viewBox="0 0 520 200" aria-hidden="true"></svg>
-   <div class="prices"><div><span>Ремонт</span><b id="erep"></b></div><div><span>Контрактный ДВС</span><b id="ebuy"></b></div></div>
-   <p class="works" id="ework"></p>
+<div class="demo-badge"><b>Демо v2</b> - по вашим комментариям: чёрно-серая гамма в стиле M, фото двигателя на фоне, подбор по мотору, Авито, работы из канала, отзывы, «Спросить» с выбором мессенджера.</div>
+
+<div class="top"><div class="wrap">
+ <span class="hide-m">Сервис: Московская обл., с. Кузовлево, д. 24 · ежедневно</span>
+ <span><span class="st">★★★★★</span> <b>5.0</b> Яндекс Карты · <b>5.0</b> Авито</span>
+ <span><b>+7 916 701-63-93</b> · MAX · Telegram · WhatsApp</span>
+</div></div>
+
+<header class="nav"><div class="wrap">
+ <a class="logo" href="index.html" aria-label="Разбор BMW - на главную"><b>RAZBOR<span>BMW</span></b><span class="mstripe"><i></i><i></i><i></i></span></a>
+ <ul>
+  <li><a href="remont-dvigatelya-bmw.html">Ремонт</a></li>
+  <li><a href="#dirs">Двигатели</a></li>
+  <li><a href="#avito">Запчасти</a></li>
+  <li><a href="#dirs">Выкуп</a></li>
+  <li><a href="#works">Работы</a></li>
+  <li><a href="#reviews">Отзывы</a></li>
+  <li><a href="#contacts">Контакты</a></li>
+ </ul>
+ <a class="ph" href="tel:+79167016393">+7 916 701-63-93</a>
+ <button class="btn sm" type="button" data-ask="Вопрос с главной">Спросить</button>
+ <button class="burger" type="button" aria-label="Меню" aria-expanded="false"><i></i><i></i><i></i></button>
+</div></header>
+<nav class="mnav" aria-label="Меню">
+ <a href="remont-dvigatelya-bmw.html">Ремонт двигателей</a><a href="#dirs">Направления</a><a href="#avito">Запчасти и двигатели</a><a href="#works">Выполненные работы</a><a href="#reviews">Отзывы</a><a href="#contacts">Контакты</a><a href="tel:+79167016393">+7 916 701-63-93</a>
+</nav>
+
+<main>
+<section class="hero" aria-label="Главный экран">
+ <div class="bgimg" role="img" aria-label="Двигатель BMW S63 под капотом"></div>
+ <div class="wrap">
+  <div>
+   <div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Моторный сервис BMW · Москва и МО</div>
+   <h1 class="rv" style="--i:1">Ремонт и продажа двигателей BMW</h1>
+   <p class="lead rv" style="--i:2">Свой моторный цех, мехобработка и разборка. Ремонтируем, продаём контрактные и восстановленные ДВС, выкупаем неисправные. Принимаем авто и снятые моторы от частников и СТО со всех регионов.</p>
+   <div class="acts rv" style="--i:3"><button class="btn" type="button" data-ask="Узнать цену ремонта">Узнать цену ремонта</button><a class="btn ghost" href="#avito">Двигатели в наличии</a></div>
+   <div class="chips rv" style="--i:4">
+    <a class="chip" href="#reviews"><b>5.0</b><span><span class="st">★★★★★</span><small>Отзывы на Яндекс Картах</small></span></a>
+    <a class="chip" href="#reviews"><b>5.0</b><span><span class="st">★★★★★</span><small>Отзывы на Авито</small></span></a>
+   </div>
+  </div>
+
+  <div class="eng rv" style="--i:2" aria-live="polite">
+   <div class="et"><span>Подбор по мотору</span><span>18 моторов</span></div>
+   <div class="fam" id="fam"><button class="on" type="button" data-f="all">Все</button><button type="button" data-f="b">Бензин</button><button type="button" data-f="d">Дизель</button><button type="button" data-f="m">M</button></div>
+   <div class="codes" id="codes" aria-label="Выберите двигатель"></div>
+   <div class="swap" id="eswap">
+    <div class="row"><div class="code" id="ecode">N63</div><div class="type" id="etype"></div></div>
+    <svg id="esvg" viewBox="0 0 440 150" aria-hidden="true"></svg>
+    <div class="prices"><div><span>Ремонт</span><b id="erep"></b></div><div><span>Контрактный ДВС</span><b id="ebuy"></b></div></div>
+    <p class="works" id="ework"></p>
+   </div>
+   <button class="btn sm" id="eask" type="button" data-ask="">Рассчитать по моему мотору</button>
   </div>
  </div>
-</header>
+</section>
+<div class="wrap"><div class="hstats">
+ <div class="rv"><b>с 2014</b><span>работаем с BMW</span></div>
+ <div class="rv" style="--i:1"><b>до 60 дней</b><span>гарантия на б/у товар</span></div>
+ <div class="rv" style="--i:2"><b>за часы</b><span>выполнение заказа на запчасти</span></div>
+ <div class="rv" style="--i:3"><b>по России</b><span>отправка сразу после оплаты</span></div>
+</div></div>
 
-<section id="dir">
- <h2 class="reveal">Шесть направлений сервиса</h2>
- <p class="sub reveal">Каждое - отдельная страница. Адреса текущих страниц сохраняются, чтобы не потерять позиции в Яндексе.</p>
- <ul class="dir">
-  <li class="reveal"><h3>Ремонт двигателей BMW</h3><p>Цепи ГРМ, ванос, маслосъёмные колпачки, капитальный ремонт N20, N55, N63, S63, N47, N57.</p><a href="#">Цены →</a></li>
-  <li class="reveal"><h3>Приём от СТО без мотористов</h3><p>Снятый ДВС или авто целиком. B2B-поток и частные клиенты, отправка из регионов.</p><a href="#">Условия →</a></li>
-  <li class="reveal"><h3>Б/у запчасти моторной группы</h3><p>С собственной разборки, с проверкой. Гарантия на б/у товар до 60 дней.</p><a href="#avito">Каталог →</a></li>
-  <li class="reveal"><h3>Восстановленные ДВС</h3><p>Двигатели после ремонта в нашем цехе - с актом работ и гарантией.</p><a href="#">В наличии →</a></li>
-  <li class="reveal"><h3>Выкуп неисправных ДВС</h3><p>BMW и китайские автомобили. Оценка по фото за час, забираем сами.</p><a href="#">Оценить →</a></li>
-  <li class="reveal"><h3>Мехобработка</h3><p>Гильзовка, ремонт ГБЦ, постелей коленвала и распредвалов.</p><a href="#">Подробнее →</a></li>
- </ul>
+<section id="dirs" class="light" style="margin-top:clamp(50px,7vw,100px)">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv"><span class="mline"><span class="mstripe"><i></i><i></i><i></i></span></span>Направления</div><h2 class="rv">Основные направления</h2></div>
+  <p class="rv">Под каждое направление - своя посадочная страница в едином стиле. Тексты ваши, оформление и формы заявки - одинаковые по всему сайту.</p></div>
+  <div class="dirs">
+   <a class="dcard dark rv" href="remont-dvigatelya-bmw.html"><span class="n">01</span><h3>Ремонт двигателей BMW</h3><p>Капремонт, цепи ГРМ, ванос, маслосъёмные колпачки. N20, N55, N63, S63, N47, N57.</p><span class="go">Открыть страницу <i>→</i></span></a>
+   <a class="dcard rv" style="--i:1" href="#"><span class="n">02</span><h3>Установка контрактных ДВС</h3><p>Подбор, проверка, установка в нашем сервисе с гарантией.</p><span class="go">Подробнее <i>→</i></span></a>
+   <a class="dcard rv" style="--i:2" href="#"><span class="n">03</span><h3>Приём от СТО</h3><p>Для сервисов без мотористов: снятый ДВС или авто целиком. B2B и частные клиенты.</p><span class="go">Условия <i>→</i></span></a>
+   <a class="dcard rv" style="--i:3" href="#avito"><span class="n">04</span><h3>Б/у запчасти моторной группы</h3><p>С собственной разборки, с проверкой. Гарантия до 60 дней.</p><span class="go">Каталог <i>→</i></span></a>
+   <a class="dcard rv" href="#avito"><span class="n">05</span><h3>Восстановленные ДВС</h3><p>Двигатели после ремонта в нашем цехе, с актом работ и гарантией.</p><span class="go">В наличии <i>→</i></span></a>
+   <a class="dcard rv" style="--i:1" href="#"><span class="n">06</span><h3>Выкуп неисправных ДВС</h3><p>BMW и китайские авто. Оценка по фото, забираем сами.</p><span class="go">Оценить <i>→</i></span></a>
+   <a class="dcard rv" style="--i:2" href="#"><span class="n">07</span><h3>Мехобработка</h3><p>Гильзовка, ремонт ГБЦ, постелей коленвала и распредвалов.</p><span class="go">Подробнее <i>→</i></span></a>
+   <a class="dcard dark rv" style="--i:3" href="#"><span class="n">08</span><h3>Дооснащение и тюнинг</h3><p>Комплекты M Power, M Стиль, рестайлинг F и G серии.</p><span class="go">Подробнее <i>→</i></span></a>
+  </div>
+ </div>
+</section>
+
+<section id="repair">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Как мы работаем</div><h2 class="rv">Этапы ремонта</h2></div>
+  <p class="rv">Ничего не делаем без согласования. Фото и видео дефектовки отправляем в мессенджер.</p></div>
+  <ol class="steps"><span class="bar"></span>
+   <li><b>Заявка</b><p>Звонок или сообщение в MAX, Telegram, WhatsApp.</p></li>
+   <li><b>Приём</b><p>Авто своим ходом, на эвакуаторе или снятый ДВС транспортной.</p></li>
+   <li><b>Дефектовка</b><p>Разбираем, меряем, присылаем фото и смету.</p></li>
+   <li><b>Согласование</b><p>Цена и сроки фиксируются до начала работ.</p></li>
+   <li><b>Ремонт</b><p>Мехобработка и сборка в своём цехе.</p></li>
+   <li><b>Выдача</b><p>Проверка, акт работ и гарантия.</p></li>
+  </ol>
+ </div>
+</section>
+
+<section class="light" id="prices">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv">Цены с текущего сайта</div><h2 class="rv">Сколько стоит</h2></div>
+  <p class="rv">Точная цена - после дефектовки. Цены «от» - для ориентира.</p></div>
+  <div class="ptabs" id="ptabs"><button class="on" type="button" data-k="rep">Ремонт ДВС</button><button type="button" data-k="buy">Двигатели б/у</button><button type="button" data-k="to">ТО и дооснащение</button></div>
+  <div class="ptable" id="ptable"></div>
+  <div style="margin-top:20px"><button class="btn" type="button" data-ask="Точная цена ремонта">Узнать точную цену</button></div>
+ </div>
+</section>
+
+<section class="kot">
+ <div class="wrap">
+  <div>
+   <div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Контрактные двигатели</div>
+   <h2 class="rv">Не покупайте кота в мешке</h2>
+   <p class="l rv">Каждый двигатель с нашей разборки проверяем перед продажей. Покажем фото и видео работы, ответим на вопросы по конкретному мотору.</p>
+   <button class="btn rv" type="button" data-ask="Подбор контрактного двигателя">Подобрать двигатель</button>
+  </div>
+  <ul>
+   <li class="rv"><span><b>Проверка до продажи</b><span>Компрессия, эндоскопия, состояние по фото.</span></span></li>
+   <li class="rv" style="--i:1"><span><b>Гарантия до 60 дней</b><span>Собственная гарантия на б/у товар.</span></span></li>
+   <li class="rv" style="--i:2"><span><b>Установка у нас</b><span>Ставим сами - отвечаем за результат целиком.</span></span></li>
+  </ul>
+ </div>
 </section>
 
 <section id="avito">
- <h2 class="reveal">Наличие с Авито</h2>
- <p class="sub reveal">Объявления с двух аккаунтов подтягиваются автоматически. Купить - на Авито, вопрос - в мессенджер со ссылкой на товар.</p>
- <div class="tabs reveal" id="tabs"><button class="on" data-t="parts">Запчасти</button><button data-t="serv">Услуги ремонта</button></div>
- <div class="items" id="items"></div>
- <p class="note">Карточки - пример оформления, в рабочей версии здесь ваши объявления.</p>
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Подтягивается с Авито автоматически</div><h2 class="rv">Актуальные предложения</h2></div>
+  <p class="rv">Два аккаунта: запчасти и двигатели, услуги ремонта. Купить - на Авито, вопрос - во всплывающем окне с названием товара.</p></div>
+  <div class="av-bar">
+   <div class="seg" id="acc"><button class="on" type="button" data-a="parts">Запчасти и двигатели</button><button type="button" data-a="serv">Услуги ремонта</button></div>
+   <div class="filt" id="flt"><button class="on" type="button" data-f="all">Все</button><button type="button" data-f="N20">N20</button><button type="button" data-f="N47">N47</button><button type="button" data-f="N55">N55</button><button type="button" data-f="N57">N57</button><button type="button" data-f="N63">N63</button><button type="button" data-f="S63">S63</button></div>
+  </div>
+  <div class="items" id="items"></div>
+  <p class="note">Карточки и фото - пример оформления. В рабочей версии здесь ваши объявления с обоих аккаунтов, обновляются сами.</p>
+ </div>
 </section>
 
-<section id="feed">
- <div class="two">
-  <div>
-   <h2 class="reveal">Из цеха</h2>
-   <p class="sub reveal">Пишете пост в канал - он сам появляется на сайте.</p>
-   <div id="posts"></div>
+<section class="light" id="works">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv">Из канала MAX · Telegram · VK</div><h2 class="rv">Выполненные работы</h2></div>
+  <p class="rv">Публикуете пост в канал - он сам появляется здесь. Ничего не нужно дублировать.</p></div>
+  <div class="posts">
+   <a class="post rv" href="#"><div class="ph"><img src="img/p5.webp" alt="Двигатель N63 после ремонта" loading="lazy" width="900" height="675"></div><div class="bd"><small><span class="src max">MAX</span>сегодня</small><b>Собрали N63 после гильзовки блока</b><p>Клиент из Казани, мотор пришёл транспортной. Блок после мехобработки, новые вкладыши и цепи.</p></div></a>
+   <a class="post rv" style="--i:1" href="#"><div class="ph"><img src="img/p8.webp" alt="ГБЦ N55 в работе" loading="lazy" width="900" height="675"></div><div class="bd"><small><span class="src tg">TG</span>вчера</small><b>ГБЦ N55: опрессовка и шлифовка</b><p>Течь антифриза в масло. Плоскость отшлифовали, колпачки заменили.</p></div></a>
+   <a class="post rv" style="--i:2" href="#"><div class="ph"><img src="img/p2.webp" alt="Двигатель S63 в сервисе" loading="lazy" width="900" height="675"></div><div class="bd"><small><span class="src vk">VK</span>3 дня назад</small><b>Вкладыши S63 - снятый ДВС от СТО из Тулы</b><p>Приняли мотор от сервиса-партнёра, фото износа - в посте.</p></div></a>
   </div>
-  <div>
-   <h2 class="reveal">Отзывы</h2>
-   <p class="sub reveal">Виджет Яндекс Карт и отзывы с Авито в одном блоке.</p>
-   <div class="rev reveal"><div class="st">★★★★★</div><p>Здесь появятся ваши отзывы с Яндекс Карт - виджет обновляется сам.</p><small>Яндекс Карты · пример блока</small></div>
-   <div class="rev reveal"><div class="st">★★★★★</div><p>И отзывы покупателей с ваших аккаунтов Авито.</p><small>Авито · пример блока</small></div>
+  <p class="note">Посты - пример. В рабочей версии - ваши публикации из канала MAX (и TG / VK).</p>
+ </div>
+</section>
+
+<section id="reviews">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Яндекс Карты и Авито</div><h2 class="rv">Отзывы</h2></div>
+  <p class="rv">Подключаются официальным виджетом Яндекса и из профиля Авито - обновляются сами.</p></div>
+  <div class="revtop rv">
+   <div class="rsrc"><b>5.0</b><div><span class="st">★★★★★</span><small>Яндекс Карты</small></div></div>
+   <div class="rsrc"><b>5.0</b><div><span class="st">★★★★★</span><small>Авито · «Ремонт двигателей Дмитрий»</small></div></div>
+  </div>
+  <div class="revs">
+   <article class="rev rv"><div class="who"><span class="av">А</span><div><b>Пример отзыва</b><small>Яндекс Карты</small></div></div><span class="st">★★★★★</span><p>Здесь будет текст отзыва с ваших Яндекс Карт - имя, дата и оценка подтягиваются автоматически.</p></article>
+   <article class="rev rv" style="--i:1"><div class="who"><span class="av">С</span><div><b>Пример отзыва</b><small>Авито</small></div></div><span class="st">★★★★★</span><p>И отзывы покупателей с ваших аккаунтов Авито - по запчастям и по ремонту.</p></article>
+   <article class="rev rv" style="--i:2"><div class="who"><span class="av">Д</span><div><b>Пример отзыва</b><small>Яндекс Карты</small></div></div><span class="st">★★★★★</span><p>Блок листается на телефоне, ссылка «Все отзывы» ведёт на карточку организации.</p></article>
   </div>
  </div>
 </section>
 
-<section id="map">
- <h2 class="reveal">Где нас найти</h2>
- <p class="sub reveal">Сервис и офис, плюс два склада выдачи. В рабочей версии - Яндекс Карта с маршрутом.</p>
- <div class="mapw">
-  <div class="map reveal">
-   <svg viewBox="0 0 600 400" aria-label="Схема адресов">
-    <g fill="none" stroke="#2a2f34" stroke-width="2"><circle cx="330" cy="190" r="70"/><circle cx="330" cy="190" r="150"/><circle cx="330" cy="190" r="230"/></g>
-    <g stroke="#30363c" stroke-width="5" fill="none"><path d="M330 190 L60 150"/><path d="M330 190 L380 400"/><path d="M330 190 L600 120"/><path d="M330 190 L240 0"/></g>
-    <text x="318" y="196" fill="#5d6268" font-family="Geologica" font-size="14">Москва</text>
-    <g class="pin on" data-k="0"><circle class="ring" cx="420" cy="350" r="10" fill="#ffb21a"/><circle class="p" cx="420" cy="350" r="8" fill="#ffb21a"/></g>
-    <g class="pin" data-k="1"><circle class="ring" cx="150" cy="170" r="10" fill="#ffb21a"/><circle class="p" cx="150" cy="170" r="8" fill="#ffb21a"/></g>
-    <g class="pin" data-k="2"><circle class="ring" cx="352" cy="262" r="10" fill="#ffb21a"/><circle class="p" cx="352" cy="262" r="8" fill="#ffb21a"/></g>
-   </svg>
+<section class="ask" id="ask-form">
+ <div class="wrap">
+  <div>
+   <div class="kicker" style="color:#dbe8fb"><span class="mstripe"><i></i><i></i><i></i></span>Ответим за 15 минут</div>
+   <h2 class="rv">Узнать цену ремонта</h2>
+   <p class="l rv">Выберите мотор и работу. Перезвоним или напишем туда, где вам удобно: Telegram, WhatsApp или MAX. Фото и видео мотора можно прислать в ответ.</p>
   </div>
-  <ul class="addr reveal" id="addr">
-   <li class="on" data-k="0"><b>Автосервис и офис</b><span>Московская обл., с. Кузовлево, д. 24</span></li>
-   <li data-k="1"><b>Склад, выдача</b><span>г. Одинцово, ул. Северная, д. 31</span></li>
-   <li data-k="2"><b>Склад, выдача</b><span>г. Москва, Каширское шоссе, вл. 148</span></li>
-  </ul>
+  <form class="form rv" novalidate>
+   <div class="g2">
+    <label>Двигатель<select name="eng"><option>N63 / S63</option><option>N55 / N54</option><option>N20 / N13</option><option>N47 / N57</option><option>B-серия</option><option>Другой / не знаю</option></select></label>
+    <label>Что нужно<select name="job"><option>Ремонт двигателя</option><option>Контрактный ДВС</option><option>Запчасти</option><option>Выкуп ДВС</option><option>Мехобработка</option></select></label>
+   </div>
+   <label>Телефон<input type="tel" name="phone" placeholder="+7 ___ ___-__-__" autocomplete="tel"></label>
+   <div><label style="margin-bottom:6px">Как связаться</label>
+    <div class="ways">
+     <label><input type="radio" name="way" value="Звонок" checked><span>Звонок</span></label>
+     <label><input type="radio" name="way" value="Telegram"><span>Telegram</span></label>
+     <label><input type="radio" name="way" value="WhatsApp"><span>WhatsApp</span></label>
+     <label><input type="radio" name="way" value="MAX"><span>MAX</span></label>
+    </div></div>
+   <button class="btn" type="submit">Отправить заявку</button>
+   <small>В заявку автоматически попадает страница, с которой она отправлена. Демо - заявка никуда не уходит.</small>
+  </form>
+ </div>
+</section>
+
+<section class="light" id="contacts">
+ <div class="wrap">
+  <div class="head"><div><div class="kicker rv">Контакты</div><h2 class="rv">Как с нами связаться</h2></div></div>
+  <div class="cont">
+   <div class="cards">
+    <div class="ccard rv"><div class="t">Сервис и офис</div><b>Московская обл., с. Кузовлево, д. 24</b><span>Ремонт, приём авто и снятых ДВС</span>
+     <div class="msg"><a class="m-max" href="#" data-ask="Вопрос по адресу сервиса">MAX</a><a class="m-tg" href="https://t.me/+79167016393">Telegram</a><a class="m-wa" href="https://wa.me/79167016393">WhatsApp</a></div></div>
+    <div class="ccard rv" style="--i:1"><div class="t">Телефон</div><b><a href="tel:+79167016393" style="text-decoration:none">+7 916 701-63-93</a></b><span>Любые виды связи: MAX, Telegram, WhatsApp</span></div>
+    <div class="ccard add rv" style="--i:2"><b style="color:#3b4046">+ Второй адрес</b><span>Место под ещё одну точку - добавим, когда скажете. На карте появится вторая метка.</span></div>
+   </div>
+   <div class="mapbox rv"><iframe title="Сервис на Яндекс Картах" loading="lazy" src="https://yandex.ru/map-widget/v1/?text=%D0%9C%D0%BE%D1%81%D0%BA%D0%BE%D0%B2%D1%81%D0%BA%D0%B0%D1%8F%20%D0%BE%D0%B1%D0%BB%D0%B0%D1%81%D1%82%D1%8C%2C%20%D1%81.%20%D0%9A%D1%83%D0%B7%D0%BE%D0%B2%D0%BB%D0%B5%D0%B2%D0%BE%2C%2024&z=12"></iframe></div>
+  </div>
  </div>
 </section>
 
 <section id="seo">
- <div class="seo">
-  <div><h2 class="reveal">Позиции не теряем</h2><p class="sub reveal">До запуска сверяю, какие страницы приводят людей из Яндекса. Их адреса, заголовки и описания остаются прежними, меняется только оформление и скорость.</p></div>
-  <ul class="urls reveal">
-   <li><b>сохраняем</b>/dvigatel-bmw</li><li><b>сохраняем</b>/razborka-bmw</li><li><b>сохраняем</b>/avtoservis-bmw</li><li><b>сохраняем</b>/remont-bmw-n20b20</li><li><b>сохраняем</b>/remont-dvigatelya-bmw-n63b44a</li><li><b>сохраняем</b>/remont-dvigatelya-bmw-s63b44b</li><li><b>сохраняем</b>/zamena-cepi-grm-bmw-n57</li><li><b>сохраняем</b>/vykup-dvs-bmw-n63-n55-n52-n20-n57-n47</li><li><b>сохраняем</b>/zapchasti-bmw</li><li><b>сохраняем</b>/remont-rulevyx-reek-bmw</li>
+ <div class="wrap keep">
+  <div>
+   <div class="kicker rv"><span class="mstripe"><i></i><i></i><i></i></span>Позиции в Яндексе</div>
+   <h2 class="rv">Старые страницы сохраняем</h2>
+   <p class="rv" style="color:var(--mut);margin-top:14px">Адреса, заголовки и описания страниц, которые сейчас приводят людей из поиска, остаются прежними - меняется оформление и скорость. Все страницы переводим в единый стиль.</p>
+  </div>
+  <ul class="urls rv">
+   <li class="must">Выкуп BMW <em>обязательно</em></li>
+   <li>Контрактные б/у двигатели BMW</li>
+   <li>Двигатель BMW б/у S63, N63, N57, N55, N47, N20, N13</li>
+   <li>Ремонт и обслуживание двигателя BMW</li>
+   <li>Ремонт рулевых электрореек BMW</li>
+   <li>Закупка б/у запчастей BMW</li>
+   <li>Разборка BMW по моделям (X5, X6, GT, i, Z4…)</li>
+   <li>Внешний и внутренний тюнинг BMW</li>
+   <li>Адреса разборки и центры выдачи</li>
+   <li>Оплата, доставка, гарантия, возврат, FAQ</li>
   </ul>
  </div>
 </section>
+</main>
+
+<footer>
+ <div class="wrap">
+  <div class="fcols">
+   <div><b>Ремонт</b><a href="remont-dvigatelya-bmw.html">Ремонт двигателей BMW</a><a href="#">Замена цепей ГРМ</a><a href="#">Мехобработка</a><a href="#">Приём от СТО</a></div>
+   <div><b>Двигатели</b><a href="#avito">Контрактные ДВС</a><a href="#avito">Восстановленные ДВС</a><a href="#">Выкуп BMW</a></div>
+   <div><b>Покупателям</b><a href="#">Оплата и доставка</a><a href="#">Гарантия и возврат</a><a href="#">FAQ</a></div>
+   <div><b>Связь</b><a href="tel:+79167016393">+7 916 701-63-93</a><a href="#" data-ask="">MAX</a><a href="https://t.me/+79167016393">Telegram</a><a href="https://wa.me/79167016393">WhatsApp</a></div>
+  </div>
+  <div class="bigname">RAZBOR <span class="mstripe"><i></i><i></i><i></i></span> BMW</div>
+  <p class="fnote">Демо редизайна razborbmw.msk.ru. Цены - с текущего сайта, объявления, посты и отзывы - пример оформления. Фото двигателей: Wikimedia Commons (CC BY-SA 4.0 / CC BY 4.0 / PD), в рабочей версии - ваши фото из цеха.</p>
+ </div>
+</footer>
+
+<button class="btn fab" type="button" data-ask="Вопрос с сайта">Спросить</button>
+
+<div class="modal" id="ask" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="askT">
+ <div class="mbox">
+  <button class="x" type="button" aria-label="Закрыть">×</button>
+  <h3 id="askT">Задать вопрос</h3>
+  <p style="color:#5d636a;font-size:14px">Выберите, как удобнее. Тема и страница подставятся сами.</p>
+  <div class="ctx" id="askCtx"></div>
+  <div class="mopts">
+   <button class="call" type="button">Перезвоните мне <span>→</span></button>
+   <form class="callf" id="callF"><input type="tel" placeholder="+7 ___ ___-__-__" aria-label="Телефон" autocomplete="tel"><button class="btn sm" type="submit">Жду звонка</button></form>
+   <a id="mMax" class="m-max" href="#">Написать в MAX <span>→</span></a>
+   <a id="mTg" class="m-tg" href="#" target="_blank" rel="noopener">Написать в Telegram <span>→</span></a>
+   <a id="mWa" class="m-wa" href="#" target="_blank" rel="noopener">Написать в WhatsApp <span>→</span></a>
+  </div>
+  <p class="done" id="done"></p>
+ </div>
 </div>
 
-<section class="cta"><div class="wrap">
- <h2 class="reveal">Двигатель с другого конца страны - к нам</h2>
- <p class="reveal" style="--i:1">Отправьте фото или VIN в мессенджер: оценим ремонт или выкуп в тот же день.</p>
- <a class="btn reveal" style="--i:2" href="#" id="ctaBtn">Написать в Telegram</a>
-</div></section>
-<div class="wrap"><footer>Эскиз редизайна главной страницы. Цены на двигатели и ремонт - с текущего сайта, карточки и посты - пример оформления.</footer></div>
-
-<div class="fab" id="fab"><div class="menu"><small id="fabNote"></small><a href="#">Telegram</a><a href="#">MAX</a><a href="#">WhatsApp</a></div><button class="btn" type="button" id="fabBtn">Задать вопрос</button></div>
-
-<script>
-document.documentElement.classList.add('js');
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(x=>io.observe(x));
-
-/* engines: prices from the current site */
-const E={
- N20:{t:'Рядная «четвёрка», 2.0 бензин турбо',n:4,l:'i',rep:'от 60 000 ₽',buy:'от 160 000 ₽',w:'Частое: цепь ГРМ, ванос, маслосъёмные колпачки.',ord:[0,2,3,1]},
- N13:{t:'Рядная «четвёрка», 1.6 бензин турбо',n:4,l:'i',rep:'от 60 000 ₽',buy:'от 170 000 ₽',w:'Частое: цепь ГРМ, натяжитель, ванос.',ord:[0,2,3,1]},
- N55:{t:'Рядная «шестёрка», 3.0 бензин турбо',n:6,l:'i',rep:'от 100 000 ₽',buy:'от 230 000 ₽',w:'Частое: ванос, маслосъёмные колпачки, течи масла.',ord:[0,4,2,5,1,3]},
- N63:{t:'V8, 4.4 бензин битурбо',n:8,l:'v',rep:'от 160 000 ₽',buy:'от 200 000 ₽',w:'Частое: гильзовка, маслосъёмные колпачки, цепи ГРМ.',ord:[0,4,3,7,5,2,6,1]},
- S63:{t:'V8 M, 4.4 бензин битурбо',n:8,l:'v',rep:'от 180 000 ₽',buy:'от 300 000 ₽',w:'Частое: вкладыши, гильзовка, ремонт ГБЦ.',ord:[0,4,3,7,5,2,6,1]},
- N47:{t:'Рядная «четвёрка», 2.0 дизель',n:4,l:'i',rep:'от 170 000 ₽',buy:'от 170 000 ₽',w:'Частое: замена цепи ГРМ - она у N47 сзади, нужно снимать ДВС.',ord:[0,2,3,1]},
- N57:{t:'Рядная «шестёрка», 3.0 дизель',n:6,l:'i',rep:'от 200 000 ₽',buy:'от 200 000 ₽',w:'Частое: замена цепи ГРМ, вкладыши, турбины.',ord:[0,4,2,5,1,3]}
-};
-const codes=document.getElementById('codes'),svg=document.getElementById('esvg');
-Object.keys(E).forEach(k=>{const b=document.createElement('button');b.textContent=k;b.role='tab';b.onclick=()=>pick(k);codes.appendChild(b)});
-function draw(e){
- const sp=e.n===8?.62:e.n===6?.8:1.0; let s='';
- const cyl=(x,y,i,rot)=>{const d=(e.ord.indexOf(i)/e.n)*sp;
-  return `<g transform="translate(${x} ${y}) rotate(${rot})">
-   <rect x="-20" y="-70" width="40" height="92" fill="#22262a"/>
-   <rect class="fire" x="-17" y="-67" width="34" height="14" fill="#ffb21a" style="--d:-${d}s;--sp:${sp}s"/>
-   <g class="pist" style="--d:-${d}s;--sp:${sp}s;--tr:30px"><rect x="-17" y="-52" width="34" height="22" fill="#ecebe7"/><rect x="-3" y="-30" width="6" height="40" fill="#8b8f93"/></g>
-  </g>`};
- if(e.l==='i'){const w=e.n*58, x0=(520-w)/2+29; for(let i=0;i<e.n;i++) s+=cyl(x0+i*58,110,i,0);
-  s+=`<rect x="${x0-29}" y="150" width="${w}" height="16" fill="#191c1f"/><rect x="${x0-29}" y="166" width="${w}" height="6" fill="#ffb21a" opacity=".35"/>`}
- else{let a='',b='';for(let i=0;i<4;i++){a+=cyl(80+i*50,115,i,0);b+=cyl(290+i*50,115,i+4,0)}
-  s+=`<g transform="rotate(-9 155 150)">${a}</g><g transform="rotate(9 365 150)">${b}</g>`;
-  s+=`<rect x="40" y="160" width="440" height="16" fill="#191c1f"/><rect x="40" y="176" width="440" height="6" fill="#ffb21a" opacity=".35"/>`}
- svg.innerHTML=s;
-}
-const sw=document.getElementById('eswap');let cur=null;
-function pick(k){if(k===cur)return;cur=k;[...codes.children].forEach(b=>b.classList.toggle('on',b.textContent===k));
- sw.classList.add('out');setTimeout(()=>{const e=E[k];ecode.textContent=k;etype.textContent=e.t;erep.textContent=e.rep;ebuy.textContent=e.buy;ework.textContent=e.w;draw(e);sw.classList.remove('out')},matchMedia('(prefers-reduced-motion: reduce)').matches?0:220)}
-pick('N63');
-
-/* avito sample */
-const part=(c)=>`<svg viewBox="0 0 120 90"><g fill="none" stroke="${c}" stroke-width="4"><circle cx="60" cy="45" r="30"/><circle cx="60" cy="45" r="10"/><path d="M60 15v-8M60 83v-8M30 45h-8M98 45h-8"/></g></svg>`;
-const ITEMS={parts:[
- ['ГБЦ N20B20 в сборе','28 000 ₽','С разборки · проверена'],['Цепь ГРМ N47, комплект','14 500 ₽','Новая · в наличии'],['Турбина N63 левая','62 000 ₽','С разборки · гарантия 60 дней'],['Ванос впуск N55','9 800 ₽','С разборки · проверен']],
- serv:[['Замена цепи ГРМ N47/N57','от 45 000 ₽','С гарантией на работу'],['Гильзовка блока N63','от 120 000 ₽','Мехобработка в своём цехе'],['Ремонт ГБЦ','от 25 000 ₽','Опрессовка, шлифовка'],['Установка контрактного ДВС','от 35 000 ₽','Подбор и диагностика']]};
-const itemsEl=document.getElementById('items');
-function renderItems(t){itemsEl.innerHTML=ITEMS[t].map(([n,p,m],i)=>`<article class="item"><div class="ph">${part(i%2?'#8b8f93':'#ffb21a')}</div><div class="bd"><h4>${n}</h4><div class="pr">${p}</div><div class="meta">${m}</div><div class="act"><a href="#">На Авито</a><a href="#" data-q="${n}">Спросить</a></div></div></article>`).join('')}
-renderItems('parts');
-document.getElementById('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));renderItems(b.dataset.t)});
-itemsEl.addEventListener('click',e=>{const a=e.target.closest('[data-q]');if(!a)return;e.preventDefault();openFab(`Вопрос по товару: ${a.dataset.q}`)});
-
-/* posts sample */
-document.getElementById('posts').innerHTML=[['N63','Гильзовка блока N63 для клиента из Казани: блок после мехобработки, собираем.','Telegram · сегодня'],['S63','Вкладыши S63, снятый ДВС от СТО из Тулы. Фото износа в посте.','MAX · вчера'],['N47','Замена цепи ГРМ N47 - двигатель снят, ставим новый комплект.','VK · 2 дня назад']].map(([c,t,s],i)=>`<article class="post reveal" style="--i:${i}"><div class="th">${c}</div><div><small>${s}</small><p>${t}</p></div></article>`).join('');
-document.querySelectorAll('#posts .reveal').forEach(x=>io.observe(x));
-
-/* map */
-const pins=[...document.querySelectorAll('.pin')],lis=[...document.querySelectorAll('#addr li')];
-function sel(k){pins.forEach(p=>p.classList.toggle('on',p.dataset.k==k));lis.forEach(l=>l.classList.toggle('on',l.dataset.k==k))}
-pins.concat(lis).forEach(x=>x.addEventListener('click',()=>sel(x.dataset.k)));
-
-/* floating: message carries the page */
-const fab=document.getElementById('fab'),note=document.getElementById('fabNote');
-function openFab(msg){fab.classList.add('open');note.textContent=(msg||'Сообщение уйдёт с пометкой')+' · страница: '+(document.title.split(' |')[0])}
-document.getElementById('fabBtn').onclick=()=>fab.classList.contains('open')?fab.classList.remove('open'):openFab();
-document.getElementById('ctaBtn').onclick=e=>{e.preventDefault();openFab('Фото или VIN')};
-</script>
+<script src="app.js"></script>
 </body>
 </html>
