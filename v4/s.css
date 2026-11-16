@@ -23,7 +23,7 @@ h1,h2,h3{font-weight:300;letter-spacing:-.01em;line-height:1.12}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.marq-track{animation:none!important}}
 
 /* header: hide on scroll down, show on up (как bmw.com) */
-.demo{background:#000;color:#9a9a9a;font-size:12px;text-align:center;padding:7px 16px;letter-spacing:.02em}
+.demo{background:#000;color:#b0b0b0;font-size:12px;text-align:center;padding:9px 16px;letter-spacing:.02em}
 .demo b{color:#fff;font-weight:500}
 header{position:fixed;left:0;right:0;top:0;z-index:60;transition:transform .35s var(--ease),background .3s,color .3s,border-color .3s;color:#fff;border-bottom:1px solid transparent}
 header.solid{background:#fff;color:var(--ink);border-color:var(--line)}
@@ -143,7 +143,7 @@ section{padding:120px 0 0}
 .of .im{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:3px;background:var(--soft);margin-bottom:16px}
 .of .im img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
 .of:hover .im img{transform:scale(1.04)}
-.of .im span{position:absolute;left:12px;top:12px;background:#fff;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:5px 9px;border-radius:2px}
+.of .im span{position:absolute;left:12px;top:12px;background:#fff;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:2px}
 .of h3{font-size:18px;font-weight:500;line-height:1.3;margin-bottom:6px}
 .of .pr{font-size:20px;font-weight:700;margin-bottom:4px}
 .of .sm{font-size:13px;color:var(--mute)}
@@ -238,5 +238,5 @@ footer a:hover{color:var(--blue)}
  .eng{width:230px}.eng b{font-size:44px}.offers{grid-auto-columns:80%}.proc{padding:80px 0}.stp h3{font-size:26px}
  .ct .l{padding:24px}.dlg{padding:24px}.fab{right:14px;bottom:14px;left:14px;justify-content:center}.score b{font-size:80px}}
 .demo{position:fixed;left:16px;bottom:16px;z-index:65;border-radius:3px;max-width:calc(100% - 32px);text-align:left;opacity:.92}
-@media (max-width:640px){.demo{bottom:76px;font-size:11px}}
+@media (max-width:640px){.demo{bottom:76px;font-size:12px}}
 @media (max-width:640px){.hero .cta{flex-direction:column}.hero .cta .btn{width:100%}.hero h1{font-size:38px}}
