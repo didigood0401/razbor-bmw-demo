@@ -20,3 +20,20 @@ document.addEventListener('click',e=>{const a=e.target.closest('[data-ask]');if(
 if(ov){ov.onclick=close;$('.dlg .x').onclick=close;addEventListener('keydown',e=>e.key==='Escape'&&close());
  $('#wCall').onclick=()=>{$('.cb').classList.add('on');setTimeout(()=>$('.cb input').focus(),50)};
  $('.cb').onsubmit=e=>{e.preventDefault();$('.cb').classList.remove('on');$('.done').classList.add('on')}}
+
+const burger = document.querySelector('.burger');
+function toggleMenu(open) {
+  hd.classList.toggle('menu-open', open);
+  burger.setAttribute('aria-expanded', String(open));
+}
+burger.onclick = () => toggleMenu(burger.getAttribute('aria-expanded') !== 'true');
+document.addEventListener('click', event => {
+  if (!hd.contains(event.target) || event.target.closest('a, [data-ask]')) toggleMenu(false);
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && hd.classList.contains('menu-open')) {
+    toggleMenu(false);
+    burger.focus();
+  }
+});
+matchMedia('(max-width:1100px)').addEventListener('change', () => toggleMenu(false));

@@ -256,3 +256,16 @@ footer a:hover{color:var(--blue)}
 .dots a:hover,.dots button:hover{transform:scale(1.08)}.dots .mstripe{width:22px;height:3px}
 .dlg .src{font-size:12px;color:var(--mute);margin-top:16px;line-height:1.5}
 @media (max-width:760px){#oq{min-width:0;flex:1 1 100%}.dots{right:12px;bottom:100px;gap:8px}.dots a,.dots button{width:46px;height:46px}.ob{flex-wrap:wrap}}
+
+:root { --signal: #ffce38 }
+.hero .scr i::after, nav.mn a::after, .tabs button::after { background:var(--signal) }
+@media(max-width:1100px) {
+ header.menu-open { transform:none; background:var(--dk); color:white }
+ header.menu-open nav.mn { display:grid; position:absolute; top:100%; inset-inline:0; padding:10px max(18px,5vw) 20px; background:var(--dk); max-height:70vh; overflow:auto }
+ header.menu-open nav.mn a { padding:12px 0; border-top:1px solid #383b40 }
+}
+@media(prefers-reduced-motion:reduce) {
+ .hero .scr i::after,.hero .ph,.dr img,.rv,.marq-track { animation:none!important; transition:none!important; transform:none!important }
+}
+
+#pb,#oprog { background:var(--signal) }
