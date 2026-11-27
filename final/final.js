@@ -27,7 +27,10 @@ function dismissWelcome() {
   $('video', welcome).pause();
 }
 motionPreference.addEventListener('change', event => {
-  if(event.matches) $('video',assistant).pause();
+  if(event.matches) {
+    $('video',assistant).pause();
+    if(welcome) $('video',welcome).pause();
+  }
 });
 let intent = 'repair', topic = '', draft = '', preferred = '', details = '', model = '', sourceFocus;
 let itemUrl = '';
@@ -59,7 +62,11 @@ function openAssistant() {
   if (sourceFocus?.closest('.master-contact')) sourceFocus = $('.master-contact summary');
   dismissWelcome();
   assistant.showModal(); document.body.classList.add('modal-open');
-  if (!motionPreference.matches) {const movie=$('video',assistant); movie.currentTime=0; movie.play().catch(()=>{});}
+  if (!motionPreference.matches) {
+    const movie = $('video',assistant);
+    movie.currentTime = greetingAudio && !greetingAudio.paused ? greetingAudio.currentTime : 0;
+    movie.play().catch(()=>{});
+  }
   track('assistant_open');
 }
 assistant.addEventListener('close',()=>{document.body.classList.remove('modal-open');$('video',assistant).pause();sourceFocus?.focus({preventScroll:true});});
@@ -318,6 +325,14 @@ function showWelcome() {
     movie.src = 'piston.mp4';
     movie.play().catch(() => {});
   }
+  const activeMovie = () => assistant.open ? $('video',assistant) : welcome.hidden ? null : movie;
+  greetingAudio.addEventListener('playing', () => {
+    const clip = activeMovie();
+    if (!clip || motionPreference.matches) return;
+    clip.currentTime = greetingAudio.currentTime;
+    clip.play().catch(()=>{});
+  });
+  greetingAudio.addEventListener('waiting', () => activeMovie()?.pause());
   const listeners = new AbortController();
   const options = {capture:true, signal:listeners.signal};
   let attempting = false;
@@ -351,7 +366,7 @@ function playIntro() {
     if (sessionStorage.getItem('bmw-intro-v2') && navigation?.type !== 'reload') return;
     sessionStorage.setItem('bmw-intro-v2', '1');
   } catch {}
-  greetingAudio = new Audio('welcome.mp3?v=piston-voice-4');
+  greetingAudio = new Audio('welcome.mp3?v=piston-dialog-5');
   greetingAudio.preload = 'auto';
   if (motionPreference.matches) {
     showWelcome();
