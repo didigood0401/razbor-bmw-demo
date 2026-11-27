@@ -36,7 +36,8 @@ let ctxBase='',topic='',via='Перезвонить',lastFocus=null;
 if(dlg){
  dlg.setAttribute('role','dialog');dlg.setAttribute('aria-modal','true');dlg.setAttribute('aria-hidden','true');dlg.setAttribute('aria-labelledby','dt');
  dlg.innerHTML=`<button class="x" aria-label="Закрыть" type="button">×</button>
- <div class="pst"><img src="../final/piston.webp" alt="" width="68" height="68"><div><h3 id="dt">Где <b style="font-weight:700">болит?</b></h3></div></div>
+ <div class="pst"><img src="../final/piston.webp" alt="" width="76" height="76"><div class="say" aria-live="polite"><span class="tx"></span><span class="wv" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div></div>
+ <h3 id="dt">Где <b style="font-weight:700">болит?</b></h3>
  <div class="ctx"></div>
  <div class="pq">${TOPICS.map((t,i)=>`<button type="button" data-i="${i}">${t[0]}<span aria-hidden="true">→</span></button>`).join('')}</div>
  <div class="hint" role="status"></div>
@@ -48,6 +49,7 @@ if(dlg){
   <button class="btn btn-d" type="submit">Отправить вопрос мастеру</button>
  </form>
  <div class="done" role="status"></div>
+ <button class="snd" type="button">Звук: вкл</button>
  <p class="src">Демо: заявка соберётся в текст со ссылкой на страницу.</p>`;
 }
 const F=()=>$('form.cb',dlg);
@@ -58,8 +60,8 @@ function ask(ctx,model){
  $$('.pq button',dlg).forEach(b=>b.classList.remove('on'));F().style.display='';F().reset();setVia('Перезвонить');
  if(model)F().m.value=model;
  ov.classList.add('on');dlg.classList.add('on');dlg.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
- setTimeout(()=>$('.pq button',dlg).focus({preventScroll:true}),60)}
-function closeDlg(){if(!dlg||!dlg.classList.contains('on'))return;ov.classList.remove('on');dlg.classList.remove('on');dlg.setAttribute('aria-hidden','true');document.body.style.overflow='';lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}
+ setTimeout(()=>$('.pq button',dlg).focus({preventScroll:true}),60);setTimeout(()=>say(HELLO,$('.say',dlg),$('.pst img',dlg),true),250)}
+function closeDlg(){if(!dlg||!dlg.classList.contains('on'))return;stopSay();ov.classList.remove('on');dlg.classList.remove('on');dlg.setAttribute('aria-hidden','true');document.body.style.overflow='';lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}
 function draft(){const f=F();return ['Здравствуйте!',topic||ctxBase,f.m.value.trim()&&'Двигатель/модель: '+f.m.value.trim(),f.t.value.trim()&&'Вопрос: '+f.t.value.trim(),via==='Перезвонить'&&'Перезвоните: '+f.p.value.trim(),'Страница: '+location.href.split('#')[0]].filter(Boolean).join('\n')}
 if(dlg){
  ov.onclick=closeDlg;$('.x',dlg).onclick=closeDlg;
@@ -88,3 +90,24 @@ burger.onclick=()=>toggleMenu(burger.getAttribute('aria-expanded')!=='true');
 document.addEventListener('click',e=>{if(!hd.contains(e.target)||e.target.closest('a,[data-ask]'))toggleMenu(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hd.classList.contains('menu-open')){toggleMenu(false);burger.focus()}});
 matchMedia('(max-width:1100px)').addEventListener('change',()=>toggleMenu(false));
+/* Поршень говорит: печатает фразу, шевелится и озвучивает */
+const HELLO='Привет! Чем помочь?';
+const reduced=RM;
+let sndOn=localStorage.getItem('snd')!=='0',typeT=0;
+function say(text,box,img,voice){
+ const tx=box.querySelector('.tx');clearTimeout(typeT);tx.textContent='';
+ if(window.speechSynthesis)speechSynthesis.cancel();
+ if(reduced){tx.textContent=text;return}
+ box.classList.add('typing','talking');if(img)img.classList.add('talk');
+ let i=0;(function step(){tx.textContent=text.slice(0,++i);
+  if(i<text.length){typeT=setTimeout(step,45)}else{box.classList.remove('typing');typeT=setTimeout(()=>{box.classList.remove('talking');if(img)img.classList.remove('talk')},350)}})();
+ if(voice&&sndOn&&window.speechSynthesis){try{const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.02;s.pitch=1.15;speechSynthesis.speak(s)}catch(e){}}}
+function stopSay(){clearTimeout(typeT);if(window.speechSynthesis)speechSynthesis.cancel();if(dlg){$('.say',dlg).classList.remove('typing','talking');$('.pst img',dlg).classList.remove('talk')}}
+if(dlg){const sb=$('.snd',dlg);sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';
+ sb.onclick=()=>{sndOn=!sndOn;localStorage.setItem('snd',sndOn?'1':'0');sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';if(!sndOn&&window.speechSynthesis)speechSynthesis.cancel()};
+ $('.pst img',dlg).onclick=()=>say(HELLO,$('.say',dlg),$('.pst img',dlg),true)}
+/* подсказка у кнопки: один раз через 5 секунд */
+const pis=$('.pis');
+if(pis&&dlg&&!sessionStorage.getItem('pbub')){const b=document.createElement('div');b.className='pbub';b.setAttribute('aria-hidden','true');b.innerHTML='<span class="tx"></span>';pis.parentElement.append(b);
+ setTimeout(()=>{if(dlg.classList.contains('on'))return;sessionStorage.setItem('pbub','1');b.classList.add('on');const im=$('img',pis),t=b.querySelector('.tx');let i=0;im.classList.add('talk');
+  (function s(){t.textContent=HELLO.slice(0,++i);if(i<HELLO.length)setTimeout(s,45);else{im.classList.remove('talk');setTimeout(()=>b.classList.remove('on'),4500)}})()},5000)}

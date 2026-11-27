@@ -482,3 +482,44 @@ footer a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:
 /* без декора */
 .steps::after{box-shadow:none}.score .st,.rc .st{text-shadow:none}.dots .pis::after{display:none}.hero h1 b::after{display:none}
 button.rc{text-align:left;font:inherit;cursor:pointer}a.rc,button.rc{display:block;transition:border-color .3s}.rc b{font-size:20px;font-weight:500}.rc span{margin-top:10px;font-weight:500;color:var(--ink);border-bottom:2px solid var(--signal);display:inline-block}
+
+/* ===== фирменные цвета BMW вместо жёлтого ===== */
+:root{--signal:#1c69d4;--signal-lt:#6fb1ff;--m1:#81c4ff;--m2:#16588e;--m3:#e7222e}
+.mstripe i:nth-child(1){background:var(--m1)}.mstripe i:nth-child(2){background:var(--m2)}.mstripe i:nth-child(3){background:var(--m3)}
+.btn-d:hover,.btn-w:hover,.btn-l:hover,.btn-o:hover{color:#fff}
+header.solid .hd .ask:hover,.chs button:hover,.ea button:hover,.ea a:hover,.arr button:hover,.fl button:hover,.dots a:hover,.fab:hover,.dlg .x:hover,.soc a:hover,.rsrc span:hover{color:#fff}
+.eng .ty i,.of .im span,.stp.on .nm,.pl[open] summary i{color:#fff}
+.stp.done .nm{color:var(--signal-lt);border-color:var(--signal-lt)}
+.steps::after{background:var(--signal-lt)}
+.pp1 em{color:var(--signal-lt)}.hero .scr i::after{background:var(--signal-lt)}
+.dr .n{color:#cfe3ff}.dr.txt .n{color:var(--ink)}
+.hero .yr .st,.score .st,.rc .st{color:#f5b301}
+.hero .chs button:hover,.hero .find input:focus,.pricebox select:focus{border-color:var(--signal-lt)}
+.dlg .cb input:focus,.dlg .cb textarea:focus{box-shadow:0 0 0 3px rgba(28,105,212,.3)}
+.spb{background:linear-gradient(90deg,var(--m1),var(--signal),var(--m3))}
+.sl-prog i{background:var(--signal);box-shadow:none}#oprog,#eprog{background:var(--signal)}
+
+/* ===== помощник Поршень: живой ===== */
+.dots .pis img,.dlg .pst img{transform-origin:50% 90%}
+.dots .pis img{animation:flt 3.4s ease-in-out infinite}
+.dots .pis:hover img{animation:tk .3s ease-in-out infinite alternate}
+@keyframes flt{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(-3deg)}}
+@keyframes tk{from{transform:scale(1,1) rotate(-3deg)}to{transform:scale(1.07,.92) rotate(3deg)}}
+.talk{animation:tk .26s ease-in-out infinite alternate!important}
+.dlg .pst{align-items:flex-start;gap:14px;margin:4px 0 10px}
+.dlg .pst img{width:76px;height:76px}
+.say{position:relative;flex:1;background:var(--soft);border-radius:16px 16px 16px 3px;padding:14px 16px;font-size:17px;font-weight:500;min-height:56px;line-height:1.35}
+.say::before{content:"";position:absolute;left:-7px;bottom:10px;border:7px solid transparent;border-right-color:var(--soft);border-left:0}
+.say.typing .tx::after{content:"";display:inline-block;width:2px;height:1em;margin-left:2px;vertical-align:-2px;background:var(--signal);animation:cr .6s steps(2) infinite}
+@keyframes cr{50%{opacity:0}}
+.wv{display:inline-flex;gap:3px;align-items:flex-end;height:14px;margin-left:8px;vertical-align:middle;opacity:0;transition:opacity .2s}
+.talking .wv{opacity:1}
+.wv i{width:3px;background:var(--signal);border-radius:2px;height:4px;animation:wv .5s ease-in-out infinite alternate}
+.wv i:nth-child(2){animation-delay:.12s}.wv i:nth-child(3){animation-delay:.24s}.wv i:nth-child(4){animation-delay:.06s}
+@keyframes wv{to{height:14px}}
+.snd{font-size:12px;color:var(--mute);text-decoration:underline;margin:0 0 8px auto;display:block}
+.dlg h3#dt{font-size:26px;margin:6px 0 12px}
+.pbub{position:absolute;right:76px;bottom:12px;background:#fff;color:var(--ink);font-size:15px;font-weight:500;padding:12px 16px;border-radius:14px 14px 3px 14px;box-shadow:0 14px 30px -14px rgba(0,0,0,.55);white-space:nowrap;opacity:0;transform:translateY(8px) scale(.96);pointer-events:none;transition:opacity .3s,transform .3s var(--out)}
+.pbub.on{opacity:1;transform:none}
+@media (max-width:640px){.pbub{display:none}}
+@media (prefers-reduced-motion:reduce){.dots .pis img,.talk,.wv i,.say.typing .tx::after{animation:none!important}}
