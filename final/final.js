@@ -1,0 +1,219 @@
+'use strict';
+const currentPage = document.body.dataset.page;
+const params = new URLSearchParams(location.search);
+const engine = Object.hasOwn(E, params.get('engine')) ? params.get('engine') : '';
+const routes = {
+  repair: ['Ремонт двигателя', 'repair.html', 'Как проявляется неисправность? Например, стук на холодную или расход масла.'],
+  chains: ['Замена цепей ГРМ', 'chains.html', 'Укажите пробег и когда слышен шум.'],
+  contract: ['Подбор двигателя', 'contract.html', 'Какой мотор ищете и нужна ли установка?'],
+  rebuilt: ['Восстановленный ДВС', 'rebuilt.html', 'Какой мотор нужен и планируется ли обмен старого ДВС?'],
+  parts: ['Поиск запчасти', 'parts.html', 'Какая деталь нужна? Если знаете, добавьте маркировку.'],
+  buyout: ['Оценка на выкуп', 'buyout.html', 'Что продаёте, в каком состоянии и в каком городе?'],
+  partner: ['Заявка от СТО', 'partner.html', 'Снятый ДВС или автомобиль? Что уже проверено?'],
+  machining: ['Мехобработка', 'machining.html', 'Какую деталь нужно обработать?'],
+  install: ['Установка ДВС', 'install.html', 'Двигатель уже куплен? Уточните модель автомобиля.'],
+  gearbox: ['Подбор АКПП', 'gearbox.html', 'Укажите маркировку коробки или модель и год автомобиля.']
+};
+const assistant = $('#assistant');
+const conversation = $('#conversation');
+const title = $('#assistant-title');
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+motionPreference.addEventListener('change', event => {
+  if(event.matches) $('video',assistant).pause();
+});
+let intent = 'repair', topic = '', draft = '', preferred = '', details = '', model = '', sourceFocus;
+function make(tag, text, className) {
+  const element = document.createElement(tag);
+  if (text) element.textContent = text;
+  if (className) element.className = className;
+  return element;
+}
+function button(text, action, style = 'secondary') {
+  const b = make('button', text, style); b.type = 'button'; b.onclick = action; return b;
+}
+function link(text, href, className) {
+  const a = make('a', text, className); a.href = href; return a;
+}
+function display(heading) {
+  title.textContent = heading; conversation.replaceChildren(); title.focus({preventScroll:true});
+}
+function track(goal, info = {}) {
+  const data = {page:currentPage, ...info};
+  document.dispatchEvent(new CustomEvent('bmw:goal', {detail:{goal,...data}}));
+  const id = document.documentElement.dataset.metrikaId;
+  if (id && typeof window.ym === 'function') window.ym(Number(id), 'reachGoal', goal, data);
+}
+function openAssistant() {
+  if (assistant.open) return;
+  sourceFocus = document.activeElement;
+  assistant.showModal(); document.body.classList.add('modal-open');
+  if (!motionPreference.matches) {const movie=$('video',assistant); movie.currentTime=0; movie.play().catch(()=>{});}
+  track('assistant_open');
+}
+assistant.addEventListener('close',()=>{document.body.classList.remove('modal-open');$('video',assistant).pause();sourceFocus?.focus({preventScroll:true});});
+$('.close-dialog').onclick=()=>assistant.close();
+assistant.addEventListener('click',e=>{if(e.target===assistant)assistant.close();});
+function reset() {intent=routes[currentPage]?currentPage:'repair'; topic=''; preferred=''; model=engine; details=''; draft='';}
+function start() {
+  display('Где болит?');
+  conversation.append(make('p','Выберите задачу. Я задам пару вопросов и соберу обращение для моториста.'));
+  const choices=make('div','','choices');
+  for (const [name,action] of [
+    ['Двигатель стучит или дымит',()=>selectIntent('repair')],
+    ['Ремонт или другой ДВС?',compare],
+    ['Нужна запчасть или АКПП',choosePart],
+    ['Хочу продать авто или мотор',()=>selectIntent('buyout')]
+  ]) choices.append(button(name+' →',action));
+  conversation.append(choices);
+}
+function choosePart() {
+  display('Что ищем?');
+  conversation.append(button('Запчасть двигателя',()=>selectIntent('parts')),button('Коробку передач',()=>selectIntent('gearbox')),button('← Назад',start));
+}
+function compare() {
+  display('Для чего нужен мотор?');
+  conversation.append(make('p','Учитываем состояние вашего двигателя, сроки и планы на автомобиль.'));
+  const choices = make('div','','choices');
+  for(const [label,key,note] of [
+    ['Оставляю машину себе','repair','Начнём с дефектовки и сметы. Так можно сравнить стоимость ремонта именно вашего двигателя с заменой.'],
+    ['Хочу быстрее вернуть авто в строй','contract','Проверим наличие совместимого контрактного мотора, его состояние и время на установку.'],
+    ['Нужен восстановленный с перечнем работ','rebuilt','Уточним, какие операции выполнили при сборке, чем это подтверждено и какая гарантия действует.'],
+    ['Готовлю машину к продаже','contract','Сравним доступный двигатель с ремонтом по смете, с учётом сроков и задач автомобиля.']
+  ]) choices.append(button(label,()=>{intent=key;topic=label;display(routes[key][0]);conversation.append(make('p',note),link('Открыть направление →',routes[key][1]),button('Обсудить с мастером',questions,'btn'),button('← К целям',compare));}));
+  conversation.append(choices,button('← Назад',start));
+}
+function selectIntent(key) {intent=key;topic=routes[key][0];questions();}
+function field(labelText, name, value, hint, multiline = false) {
+  const label = make('label',labelText);
+  const input = make(multiline?'textarea':'input');input.name=name;input.value=value;input.maxLength=multiline?500:90;input.placeholder=hint;
+  label.append(input);return label;
+}
+function questions() {
+  display(topic || routes[intent][0]);
+  const form=make('form');const modelLabel=field('Модель или двигатель','model',model,'Например, BMW X5 F15, N57');
+  const buyoutHints={
+    'Автомобиль BMW':'Год, пробег, состояние кузова и двигателя, город осмотра.',
+    'Неисправный ДВС':'Код мотора, причина снятия, повреждения и комплектность.',
+    'Запчасти':'Название, маркировка, количество, состояние и город.',
+    'Остатки разборки':'Какие агрегаты остались, примерное количество и где их можно осмотреть.'
+  };
+  const item=topic.split(' — ')[1];
+  const hint=topic.includes('гарантии')?'По какому мотору, детали или виду ремонта уточнить срок и условия?':buyoutHints[item]||routes[intent][2];
+  const detailLabel=field('Что нужно мастеру знать?','details',details,hint,true);
+  detailLabel.lastChild.required=true;
+  const submit=make('button','Собрать обращение →','btn');submit.type='submit';
+  form.append(modelLabel,detailLabel,submit);conversation.append(form,button('← К выбору задачи',start));
+  form.onsubmit=e=>{e.preventDefault();model=form.elements.model.value.trim();details=form.elements.details.value.trim();if(!details){form.elements.details.focus();return;}
+    makeDraft([topic||routes[intent][0],model,details]);result();};
+}
+function sourceUrl() {return location.protocol==='file:'?'https://didigood0401.github.io/razbor-bmw-demo/final/'+(location.pathname.split('/').pop()||'index.html')+location.search:location.origin+location.pathname+location.search;}
+function makeDraft(lines) {
+  draft=['Здравствуйте!',...lines.filter(Boolean),'Страница: '+sourceUrl()].join('\n');
+  track('request_prepared',{direction:intent});
+}
+async function copyText(text, status) {
+  try {await navigator.clipboard.writeText(text);status.textContent='Текст скопирован.';}
+  catch {const area=$('textarea',conversation);if(area){area.focus();area.select();}status.textContent='Выделите текст и скопируйте его вручную.';}
+}
+function result() {
+  display('Ваш вопрос готов');
+  const intro=make('p',preferred==='Звонок'?'Передайте запрос в удобном чате, чтобы мастер получил номер и мог перезвонить.':'Проверьте текст и выберите, как передать его мастеру.');
+  const label=field('Черновик сообщения','message',draft,'',true);const area=label.lastChild;area.maxLength=1800;area.rows=5;
+  const status=make('p');status.setAttribute('role','status');
+  const channels=make('div','','channel-actions');
+  const tag=(a,ch)=>a.addEventListener('click',()=>track('messenger_click',{channel:ch,direction:intent}));
+  const wa=link('WhatsApp ↗','https://wa.me/79167016393?text='+encodeURIComponent(area.value));tag(wa,'WhatsApp');
+  const tg=link('Telegram ↗','https://t.me/+79167016393?text='+encodeURIComponent(area.value));tag(tg,'Telegram');
+  for (const a of [wa,tg]){a.target='_blank';a.rel='noopener';}
+  area.oninput=()=>{draft=area.value;wa.href='https://wa.me/79167016393?text='+encodeURIComponent(draft);tg.href='https://t.me/+79167016393?text='+encodeURIComponent(draft);};
+  const max=button('MAX',async()=>{
+    await copyText(area.value,status);
+    status.append(' В MAX найдите сервис по номеру +7 916 701-63-93 и вставьте сообщение. ');
+    const open=link('Открыть MAX ↗','https://web.max.ru/');
+    open.target='_blank';open.rel='noopener';
+    open.onclick=()=>track('messenger_click',{channel:'MAX',direction:intent});
+    status.append(open);
+  });
+  channels.append(wa,tg,max,button('Скопировать',()=>copyText(area.value,status)));
+  if(preferred==='MAX')status.textContent='Для MAX скопируйте текст и откройте чат сервиса по номеру +7 916 701-63-93.';
+  conversation.append(intro,label,channels,status,link('Перейти в раздел «'+routes[intent][0]+'» →',routes[intent][1]+(engine?'?engine='+engine:'')),button('Начать заново',()=>{reset();start();}));
+}
+document.addEventListener('click',e=>{
+  const a=e.target.closest('[data-help],[data-intent],[data-topic],[data-channel],a[href^="tel:"]');if(!a)return;
+  if(a.matches('a[href^="tel:"]')){track('phone_click');return;}
+  reset();openAssistant();
+  if(a.dataset.channel){preferred=a.dataset.channel;topic=routes[intent][0];questions();}
+  else if(a.dataset.topic){topic=a.dataset.topic;intent=a.dataset.direction||'buyout';questions();}
+  else if(a.dataset.intent)selectIntent(a.dataset.intent);else start();
+});
+$('.request-form').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.currentTarget;const phone=f.elements.phone.value;
+  if(phone.replace(/\D/g,'').length<7){f.elements.phone.setCustomValidity('Проверьте номер телефона.');f.elements.phone.reportValidity();return;}
+  reset();openAssistant();preferred=f.elements.channel.value;model=f.elements.engine.value;details=f.elements.task.value;
+  makeDraft([details,model,'Телефон: '+phone,'Предпочитаю: '+preferred]);result();
+});
+$('.request-form [name=phone]').oninput=e=>e.target.setCustomValidity('');
+$('.menu-toggle').onclick=e=>{const o=$('.mast').classList.toggle('is-open');e.currentTarget.setAttribute('aria-expanded',String(o));};
+$('.mast nav').onclick=()=>{$('.mast').classList.remove('is-open');$('.menu-toggle').setAttribute('aria-expanded','false');};
+if(engine && $('#chosen')) {
+  $('#chosen').textContent=engine;$('.request-form [name=engine]').value=engine;
+  const amount=currentPage==='repair'?E[engine].rep:currentPage==='contract'?E[engine].buy:'';
+  if(amount)$('#rate').textContent=engine+' · '+amount;
+  for(const a of $$('.related a'))a.href=a.getAttribute('href')+'?engine='+engine;
+}
+if(currentPage!=='home') track('service_view',{direction:currentPage});
+for(const b of $$('[data-step]')) b.onclick=()=>{$$('[data-step]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#step-note').textContent=b.dataset.step;};
+let group='parts';
+const filter=$('#filter-engine');
+for(const code of [...new Set([...A.parts,...A.serv].map(x=>x[2]))].sort())filter.append(new Option(code,code));
+if(engine && currentPage==='parts'){
+  if(!Array.from(filter.options).some(option=>option.value===engine))filter.append(new Option(engine,engine));
+  filter.value=engine;
+}
+function renderProducts() {
+  const target=$('#products');target.replaceChildren();
+  const search=$('#filter-text').value.trim().toLowerCase();
+  const rows=A[group].filter(([n,p,code])=>(!filter.value||code===filter.value)&&(!search||(n+' '+code).toLowerCase().includes(search)));
+  const limit=currentPage==='home'?8:4;
+  for(const [name,price,code,image] of rows.slice(0,limit)){
+    const card=make('article','','product');const img=make('img');img.src='../img/'+image+'.webp';img.alt='';img.loading='lazy';
+    const inner=make('div');const ask=button('Уточнить стоимость →',()=>{reset();openAssistant();intent=group==='parts'?'parts':'repair';topic=name;model=code;questions();},'');
+    const avito=link('Профиль на Авито ↗','https://www.avito.ru/user/81631be4df98262c27509e972acbbbc2/profile');avito.target='_blank';avito.rel='noopener';
+    inner.append(make('small',code),make('h3',name),make('b',price),ask);if(group==='parts')inner.append(avito);card.append(img,inner);target.append(card);
+  }
+  if(!rows.length)target.append(make('p','В подборке совпадений нет. Оставьте мастеру маркировку — он проверит наличие.','empty'),button('Спросить о детали',()=>{reset();openAssistant();topic=search?'Поиск: '+search:'Поиск детали';intent='parts';model=filter.value;questions();}));
+}
+$$('[data-group]').forEach(b=>b.onclick=()=>{group=b.dataset.group;$$('[data-group]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderProducts();});
+filter.onchange=renderProducts;$('#filter-text').oninput=renderProducts;renderProducts();
+if($('#review-body')){
+  const area=$('#review-body');
+  const showAvitoReviews=()=>area.replaceChildren(make('p','Покупатели запчастей оценили профиль на 5,0 в материалах видеоразбора. Актуальные отзывы и ответы продавца доступны в профиле.'),link('Читать на Авито ↗','https://www.avito.ru/user/81631be4df98262c27509e972acbbbc2/profile'));
+  $('[data-avito-reviews]').onclick=showAvitoReviews;
+  $('a[href="#avito-reviews"]').addEventListener('click',showAvitoReviews);
+  $('[data-review-list]').onclick=()=>area.replaceChildren(make('p','Здесь появятся отзывы клиентов после модерации. В демонстрационной версии опубликованных отзывов нет.'));
+  $('[data-review]').onclick=()=>{const f=make('form');const name=field('Ваше имя','name','','Имя');const message=field('Ваш отзыв','text','','Какая работа выполнялась?',true);name.lastChild.required=message.lastChild.required=true;
+    const submit=make('button','Предпросмотр отзыва','btn');f.append(name,message,submit);area.replaceChildren(f);f.onsubmit=e=>{e.preventDefault();area.replaceChildren(make('b',f.elements.name.value),make('p',f.elements.text.value),make('small','Предпросмотр. Публикация на рабочем сайте — после модерации.'));};};
+}
+const maxContact = $('[data-max-contact]');
+maxContact.onclick = () => {
+  reset(); openAssistant(); display('Написать в MAX');
+  conversation.append(make('p','Найдите сервис в MAX по рабочему номеру +7 916 701-63-93. Вопрос по машине можно подготовить здесь.'));
+  const openMax = link('Открыть MAX ↗','https://web.max.ru/','secondary');
+  openMax.target='_blank'; openMax.rel='noopener';
+  openMax.onclick=()=>track('messenger_click',{channel:'MAX'});
+  conversation.append(openMax,button('Подготовить вопрос',()=>{preferred='MAX';questions();}));
+};
+for(const a of $$('a[href^="https://t.me/+"],a[href^="https://wa.me/"]')){
+  a.addEventListener('click',()=>track('messenger_click',{channel:a.hostname==='wa.me'?'WhatsApp':'Telegram'}));
+  a.href += (a.search?'&':'?')+'text='+encodeURIComponent('Здравствуйте! У меня вопрос по странице '+sourceUrl());
+}
+const prices = $('#engine-prices');
+if(prices){
+  const key=currentPage==='repair'?'rep':currentPage==='contract'?'buy':'';
+  const codes=engine?[engine]:['N13','N20','N55','N63','S63','N47','N57','S58'];
+  for(const k of codes){
+    const row=make('div');row.append(make('b',k),make('span',E[k][key]||'По запросу'));
+    prices.append(row);
+  }
+}
+
