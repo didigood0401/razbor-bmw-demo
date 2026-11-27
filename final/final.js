@@ -1,7 +1,8 @@
 'use strict';
 const currentPage = document.body.dataset.page;
 const params = new URLSearchParams(location.search);
-const engine = Object.hasOwn(E, params.get('engine')) ? params.get('engine') : '';
+const requestedEngine = (params.get('engine') || '').toUpperCase().replace(/^S63B44$/, 'S63');
+const engine = Object.hasOwn(E, requestedEngine) ? requestedEngine : '';
 const routes = {
   repair: ['Ремонт двигателя', 'repair.html', 'Как проявляется неисправность? Например, стук на холодную или расход масла.'],
   chains: ['Замена цепей ГРМ', 'chains.html', 'Укажите пробег и когда слышен шум.'],
@@ -30,6 +31,7 @@ motionPreference.addEventListener('change', event => {
   if(event.matches) $('video',assistant).pause();
 });
 let intent = 'repair', topic = '', draft = '', preferred = '', details = '', model = '', sourceFocus;
+let itemUrl = '';
 function make(tag, text, className) {
   const element = document.createElement(tag);
   if (text) element.textContent = text;
@@ -64,7 +66,11 @@ function openAssistant() {
 assistant.addEventListener('close',()=>{document.body.classList.remove('modal-open');$('video',assistant).pause();sourceFocus?.focus({preventScroll:true});});
 $('.close-dialog').onclick=()=>assistant.close();
 assistant.addEventListener('click',e=>{if(e.target===assistant)assistant.close();});
-function reset() {intent=routes[currentPage]?currentPage:'repair'; topic=''; preferred=''; model=engine; details=''; draft='';}
+function reset() {
+  intent=routes[currentPage]?currentPage:'repair';
+  topic=''; preferred=''; details=''; draft=''; itemUrl='';
+  model=engineLabel(engine || $('#codes')?.dataset.selected || '');
+}
 function start() {
   display('Где болит?');
   conversation.append(make('p','Выберите задачу. Я задам пару вопросов и соберу обращение для моториста.'));
@@ -134,7 +140,7 @@ function questions() {
 }
 function sourceUrl() {return location.protocol==='file:'?'https://didigood0401.github.io/razbor-bmw-demo/final/'+(location.pathname.split('/').pop()||'index.html')+location.search:location.origin+location.pathname+location.search;}
 function makeDraft(lines) {
-  draft=['Здравствуйте!',...lines.filter(Boolean),'Страница: '+sourceUrl()].join('\n');
+  draft=['Здравствуйте!',...lines.filter(Boolean),'Страница: '+(itemUrl || sourceUrl())].join('\n');
   track('request_prepared',{direction:intent});
 }
 async function copyText(text, status) {
@@ -160,9 +166,15 @@ function result() {
     open.onclick=()=>track('messenger_click',{channel:'MAX',direction:intent});
     status.append(open);
   });
-  channels.append(wa,tg,max,button('Скопировать',()=>copyText(area.value,status)));
+  const options = {Telegram:tg, WhatsApp:wa, MAX:max};
+  const first = options[preferred];
+  if (first) {first.classList.add('preferred-channel'); channels.append(first);}
+  for (const option of Object.values(options)) if (option!==first) channels.append(option);
+  channels.append(button('Скопировать',()=>copyText(area.value,status)));
   if(preferred==='MAX')status.textContent='Для MAX скопируйте текст и откройте чат сервиса по номеру +7 916 701-63-93.';
-  conversation.append(intro,label,channels,status,link('Перейти в раздел «'+routes[intent][0]+'» →',routes[intent][1]+(engine?'?engine='+engine:'')),button('Начать заново',()=>{reset();start();}));
+  const modelCode = model.trim().toUpperCase().replace(/^S63B44$/, 'S63');
+  const serviceUrl = routes[intent][1]+(Object.hasOwn(E,modelCode)?'?engine='+modelCode:'');
+  conversation.append(intro,label,channels,status,link('Перейти в раздел «'+routes[intent][0]+'» →',serviceUrl),button('Начать заново',()=>{reset();start();}));
 }
 document.addEventListener('click',e=>{
   const a=e.target.closest('[data-help],[data-intent],[data-topic],[data-channel],a[href^="tel:"]');if(!a)return;
@@ -172,26 +184,47 @@ document.addEventListener('click',e=>{
   else if(a.dataset.topic){topic=a.dataset.topic;intent=a.dataset.direction||'buyout';questions();}
   else if(a.dataset.intent)selectIntent(a.dataset.intent);else start();
 });
-$('.request-form').addEventListener('submit',e=>{
-  e.preventDefault();const f=e.currentTarget;const phone=f.elements.phone.value;
-  if(phone.replace(/\D/g,'').length<7){f.elements.phone.setCustomValidity('Проверьте номер телефона.');f.elements.phone.reportValidity();return;}
-  reset();openAssistant();preferred=f.elements.channel.value;model=f.elements.engine.value;details=f.elements.task.value;
-  makeDraft([details,model,'Телефон: '+phone,'Предпочитаю: '+preferred]);result();
+const requestForm = $('.request-form');
+const requestPhone = requestForm.elements.phone;
+function updateCallback() {
+  const callback = requestForm.elements.channel.value === 'Звонок';
+  requestPhone.closest('label').hidden = !callback;
+  requestPhone.disabled = !callback;
+  requestPhone.required = callback;
+  requestPhone.setCustomValidity('');
+}
+requestForm.elements.channel.onchange = updateCallback;
+updateCallback();
+requestPhone.oninput = () => requestPhone.setCustomValidity('');
+requestForm.elements.task.oninput = e => e.target.setCustomValidity('');
+requestForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const task = requestForm.elements.task;
+  if (!task.value.trim()) {task.setCustomValidity('Опишите, пожалуйста, вашу задачу.');task.reportValidity();return;}
+  if (!requestPhone.disabled && requestPhone.value.replace(/\D/g,'').length<7) {
+    requestPhone.setCustomValidity('Проверьте номер телефона.');requestPhone.reportValidity();return;
+  }
+  reset();openAssistant();preferred=requestForm.elements.channel.value;
+  model=requestForm.elements.engine.value.trim();details=task.value.trim();
+  const subject=currentPage==='home'?'Обращение в моторный цех':$('h1').textContent.trim();
+  makeDraft([subject,model,details,requestPhone.disabled?'':'Телефон: '+requestPhone.value,'Предпочитаю: '+preferred]);result();
 });
-$('.request-form [name=phone]').oninput=e=>e.target.setCustomValidity('');
 $('.menu-toggle').onclick=e=>{const o=$('.mast').classList.toggle('is-open');e.currentTarget.setAttribute('aria-expanded',String(o));};
 $('.mast nav').onclick=()=>{$('.mast').classList.remove('is-open');$('.menu-toggle').setAttribute('aria-expanded','false');};
 if(engine && $('#chosen')) {
-  $('#chosen').textContent=engine;$('.request-form [name=engine]').value=engine;
+  $('#chosen').textContent=' '+engineLabel(engine);$('.request-form [name=engine]').value=engineLabel(engine);
   const amount=currentPage==='repair'?E[engine].rep:currentPage==='contract'?E[engine].buy:'';
   if(amount)$('#rate').textContent=engine+' · '+amount;
   for(const a of $$('.related a'))a.href=a.getAttribute('href')+'?engine='+engine;
 }
 if(currentPage!=='home') track('service_view',{direction:currentPage});
 for(const b of $$('[data-step]')) b.onclick=()=>{$$('[data-step]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));$('#step-note').textContent=b.dataset.step;};
-let group='parts';
+const initialItem = params.get('item');
+let group = A.serv.some(row=>row[4]===initialItem) ? 'serv' : 'parts';
+const pageSize = currentPage==='home'?8:4;
+let visibleProducts = initialItem ? Infinity : pageSize;
 const filter=$('#filter-engine');
-for(const code of [...new Set([...A.parts,...A.serv].map(x=>x[2]))].sort())filter.append(new Option(code,code));
+for(const code of [...new Set([...A.parts,...A.serv].map(x=>x[2]))].sort())filter.append(new Option(engineLabel(code),code));
 if(engine && currentPage==='parts'){
   if(!Array.from(filter.options).some(option=>option.value===engine))filter.append(new Option(engine,engine));
   filter.value=engine;
@@ -199,18 +232,32 @@ if(engine && currentPage==='parts'){
 function renderProducts() {
   const target=$('#products');target.replaceChildren();
   const search=$('#filter-text').value.trim().toLowerCase();
-  const rows=A[group].filter(([n,p,code])=>(!filter.value||code===filter.value)&&(!search||(n+' '+code).toLowerCase().includes(search)));
-  const limit=currentPage==='home'?8:4;
-  for(const [name,price,code,image] of rows.slice(0,limit)){
+  const rows=A[group].filter(([n,p,code])=>(!filter.value||code===filter.value)&&(!search||(n+' '+engineLabel(code)).toLowerCase().includes(search)));
+  const shown = rows.slice(0,visibleProducts);
+  $('#catalog-count').textContent=rows.length?'Показано '+shown.length+' из '+rows.length:'Ничего не найдено';
+  $('.catalog-more').hidden=shown.length>=rows.length;
+  for(const [name,price,code,image,id,route] of shown){
     const card=make('article','','product');const img=make('img');img.src='../img/'+image+'.webp';img.alt='';img.loading='lazy';
-    const inner=make('div');const ask=button('Уточнить стоимость →',()=>{reset();openAssistant();intent=group==='parts'?'parts':'repair';topic=name;model=code;questions();},'');
+    card.id='offer-'+id;
+    const inner=make('div');const ask=button('Спросить мастера →',()=>{
+      reset();openAssistant();intent=route;topic=name;model=engineLabel(code);
+      const url=new URL(sourceUrl());url.search='';url.searchParams.set('item',id);url.hash=card.id;
+      itemUrl=url.href;questions();
+    },'');
     const avito=link('Профиль на Авито ↗','https://www.avito.ru/user/81631be4df98262c27509e972acbbbc2/profile');avito.target='_blank';avito.rel='noopener';
-    inner.append(make('small',code),make('h3',name),make('b',price),ask);if(group==='parts')inner.append(avito);card.append(img,inner);target.append(card);
+    avito.onclick=()=>track('avito_click',{item:id});
+    inner.append(make('small',engineLabel(code)),make('h3',name),make('b',price),ask);if(group==='parts')inner.append(avito);card.append(img,inner);target.append(card);
   }
-  if(!rows.length)target.append(make('p','В подборке совпадений нет. Оставьте мастеру маркировку — он проверит наличие.','empty'),button('Спросить о детали',()=>{reset();openAssistant();topic=search?'Поиск: '+search:'Поиск детали';intent='parts';model=filter.value;questions();}));
+  if(!rows.length)target.append(make('p','Сообщите мастеру код двигателя и задачу — он уточнит варианты.','empty'),button('Уточнить у мастера',()=>{reset();openAssistant();intent=group==='parts'?'parts':'repair';topic=search?'Поиск: '+search:routes[intent][0];model=engineLabel(filter.value);questions();}));
 }
-$$('[data-group]').forEach(b=>b.onclick=()=>{group=b.dataset.group;$$('[data-group]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderProducts();});
-filter.onchange=renderProducts;$('#filter-text').oninput=renderProducts;renderProducts();
+function filterProducts() {visibleProducts=pageSize;renderProducts();}
+for(const b of $$('[data-group]')) {
+  b.setAttribute('aria-pressed',String(b.dataset.group===group));
+  b.onclick=()=>{group=b.dataset.group;$$('[data-group]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));filterProducts();};
+}
+$('.catalog-more').onclick=()=>{visibleProducts+=pageSize;renderProducts();};
+filter.onchange=filterProducts;$('#filter-text').oninput=filterProducts;renderProducts();
+if(initialItem && location.hash === '#offer-'+initialItem) document.getElementById('offer-'+initialItem)?.scrollIntoView();
 if($('#review-body')){
   const area=$('#review-body');
   const showAvitoReviews=()=>area.replaceChildren(make('p','Покупатели запчастей оценили профиль на 5,0 в материалах видеоразбора. Актуальные отзывы и ответы продавца доступны в профиле.'),link('Читать на Авито ↗','https://www.avito.ru/user/81631be4df98262c27509e972acbbbc2/profile'));
@@ -258,9 +305,9 @@ for(const a of $$('a[href^="https://t.me/+"],a[href^="https://wa.me/"]')){
 const prices = $('#engine-prices');
 if(prices){
   const key=currentPage==='repair'?'rep':currentPage==='contract'?'buy':'';
-  const codes=engine?[engine]:['N13','N20','N55','N63','S63','N47','N57','S58'];
+  const codes=engine?[engine]:Object.keys(E);
   for(const k of codes){
-    const row=make('div');row.append(make('b',k),make('span',E[k][key]||'По запросу'));
+    const row=make('div');row.append(make('b',engineLabel(k)),make('span',E[k][key]||'По запросу'));
     prices.append(row);
   }
 }
