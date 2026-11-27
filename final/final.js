@@ -18,6 +18,14 @@ const assistant = $('#assistant');
 const conversation = $('#conversation');
 const title = $('#assistant-title');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+const welcome = $('#robot-welcome');
+let greetingAudio;
+function dismissWelcome() {
+  if (!welcome || welcome.hidden) return;
+  welcome.hidden = true;
+  $('video', welcome).pause();
+  greetingAudio?.pause();
+}
 motionPreference.addEventListener('change', event => {
   if(event.matches) $('video',assistant).pause();
 });
@@ -46,6 +54,8 @@ function track(goal, info = {}) {
 function openAssistant() {
   if (assistant.open) return;
   sourceFocus = document.activeElement;
+  if (welcome?.contains(sourceFocus)) sourceFocus = $('.robot-launch');
+  dismissWelcome();
   assistant.showModal(); document.body.classList.add('modal-open');
   if (!motionPreference.matches) {const movie=$('video',assistant); movie.currentTime=0; movie.play().catch(()=>{});}
   track('assistant_open');
@@ -231,4 +241,62 @@ if(prices){
     prices.append(row);
   }
 }
+
+function showWelcome() {
+  welcome.hidden = false;
+  const movie = $('video', welcome);
+  if (!motionPreference.matches) {
+    movie.src = 'piston.mp4';
+    movie.play().catch(() => {});
+  }
+  greetingAudio = new Audio('welcome.mp3');
+  const sound = $('.welcome-sound', welcome);
+  function playGreeting() {
+    greetingAudio.currentTime = 0;
+    return greetingAudio.play().then(() => {
+      sound.textContent = 'Повторить приветствие';
+      $('.welcome-status', welcome).textContent = '';
+    });
+  }
+  sound.onclick = () => playGreeting().catch(() => {
+    $('.welcome-status', welcome).textContent = 'Не удалось включить звук. Попробуйте ещё раз.';
+  });
+  $('.welcome-close', welcome).onclick = () => {
+    dismissWelcome();
+    $('.robot-launch').focus({preventScroll: true});
+  };
+  window.addEventListener('pagehide', dismissWelcome, {once: true});
+  playGreeting().catch(() => {});
+}
+
+function playIntro() {
+  const intro = $('#ignition');
+  if (!intro || location.hash) return;
+  try {
+    if (sessionStorage.getItem('bmw-intro-v1')) return;
+    sessionStorage.setItem('bmw-intro-v1', '1');
+  } catch {}
+  if (motionPreference.matches) {
+    showWelcome();
+    return;
+  }
+  let remaining = 3;
+  const digits = $('.ignition-count', intro);
+  let timer;
+  function finish() {
+    if (!intro.open) return;
+    clearInterval(timer);
+    intro.close();
+    showWelcome();
+  }
+  $('.ignition-skip', intro).onclick = finish;
+  intro.addEventListener('cancel', event => { event.preventDefault(); finish(); }, {once: true});
+  intro.showModal();
+  timer = setInterval(() => {
+    remaining -= 1;
+    if (remaining === 0) finish();
+    else digits.textContent = String(remaining);
+  }, 700);
+}
+playIntro();
 
