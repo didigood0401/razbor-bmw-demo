@@ -36,7 +36,7 @@ let ctxBase='',topic='',via='Перезвонить',lastFocus=null;
 if(dlg){
  dlg.setAttribute('role','dialog');dlg.setAttribute('aria-modal','true');dlg.setAttribute('aria-hidden','true');dlg.setAttribute('aria-labelledby','dt');
  dlg.innerHTML=`<button class="x" aria-label="Закрыть" type="button">×</button>
- <div class="pst"><img src="../final/piston.webp" alt="" width="76" height="76"><div class="say" aria-live="polite"><span class="tx"></span><span class="wv" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div></div>
+ <div class="pst"><video class="av" src="../final/piston.mp4" poster="../final/piston.webp" muted loop playsinline preload="none" width="76" height="76" aria-hidden="true"></video><div class="say" aria-live="polite"><span class="tx"></span><span class="wv" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div></div>
  <h3 id="dt">Где <b style="font-weight:700">болит?</b></h3>
  <div class="ctx"></div>
  <div class="pq">${TOPICS.map((t,i)=>`<button type="button" data-i="${i}">${t[0]}<span aria-hidden="true">→</span></button>`).join('')}</div>
@@ -60,7 +60,7 @@ function ask(ctx,model){
  $$('.pq button',dlg).forEach(b=>b.classList.remove('on'));F().style.display='';F().reset();setVia('Перезвонить');
  if(model)F().m.value=model;
  ov.classList.add('on');dlg.classList.add('on');dlg.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
- setTimeout(()=>$('.pq button',dlg).focus({preventScroll:true}),60);setTimeout(()=>say(HELLO,$('.say',dlg),$('.pst img',dlg),true),250)}
+ setTimeout(()=>$('.pq button',dlg).focus({preventScroll:true}),60);setTimeout(()=>say(HELLO,$('.say',dlg),$('.pst .av',dlg),true),250)}
 function closeDlg(){if(!dlg||!dlg.classList.contains('on'))return;stopSay();ov.classList.remove('on');dlg.classList.remove('on');dlg.setAttribute('aria-hidden','true');document.body.style.overflow='';lastFocus&&lastFocus.focus&&lastFocus.focus({preventScroll:true})}
 function draft(){const f=F();return ['Здравствуйте!',topic||ctxBase,f.m.value.trim()&&'Двигатель/модель: '+f.m.value.trim(),f.t.value.trim()&&'Вопрос: '+f.t.value.trim(),via==='Перезвонить'&&'Перезвоните: '+f.p.value.trim(),'Страница: '+location.href.split('#')[0]].filter(Boolean).join('\n')}
 if(dlg){
@@ -90,24 +90,29 @@ burger.onclick=()=>toggleMenu(burger.getAttribute('aria-expanded')!=='true');
 document.addEventListener('click',e=>{if(!hd.contains(e.target)||e.target.closest('a,[data-ask]'))toggleMenu(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hd.classList.contains('menu-open')){toggleMenu(false);burger.focus()}});
 matchMedia('(max-width:1100px)').addEventListener('change',()=>toggleMenu(false));
-/* Поршень говорит: печатает фразу, шевелится и озвучивает */
-const HELLO='Привет! Чем помочь?';if(window.speechSynthesis)speechSynthesis.getVoices();
+/* Поршень говорит: живая запись приветствия, анимация персонажа, печать текста */
+const HELLO='Привет! Чем помочь?';
 const reduced=RM;
-let sndOn=localStorage.getItem('snd')!=='0',typeT=0;
-function say(text,box,img,voice){
+let sndOn=localStorage.getItem('snd')!=='0',typeT=0,voiceAu=null;
+function getAu(){if(!voiceAu){voiceAu=new Audio('../final/welcome.mp3');voiceAu.preload='auto'}return voiceAu}
+function fallbackTTS(text){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.15;s.pitch=1.4;speechSynthesis.speak(s)}catch(e){}}
+function playClip(el,done){if(el&&el.play){el.currentTime=0;el.play().catch(()=>{})}}
+function say(text,box,av,voice){
  const tx=box.querySelector('.tx');clearTimeout(typeT);tx.textContent='';
- if(window.speechSynthesis)speechSynthesis.cancel();
+ if(voiceAu)voiceAu.pause();
  if(reduced){tx.textContent=text;return}
- box.classList.add('typing','talking');if(img)img.classList.add('talk');
+ let delay=60;
+ if(voice&&sndOn){const a=getAu();a.currentTime=0;const dur=isFinite(a.duration)&&a.duration>0?a.duration:2.2;delay=Math.max(40,dur*880/text.length);
+  const p=a.play();if(p&&p.catch)p.catch(()=>fallbackTTS(text))}
+ box.classList.add('typing','talking');if(av){av.classList.add('talk');if(av.play)playClip(av)}
  let i=0;(function step(){tx.textContent=text.slice(0,++i);
-  if(i<text.length){typeT=setTimeout(step,34)}else{box.classList.remove('typing');typeT=setTimeout(()=>{box.classList.remove('talking');if(img)img.classList.remove('talk')},350)}})();
- if(voice&&sndOn&&window.speechSynthesis){try{const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.3;s.pitch=1.8;s.volume=1;const vs=speechSynthesis.getVoices().filter(v=>/^ru/i.test(v.lang));const vv=vs.find(v=>/milena|alena|google|female|ирина|irina|светлана|svetlana/i.test(v.name))||vs[0];if(vv)s.voice=vv;speechSynthesis.speak(s)}catch(e){}}}
-function stopSay(){clearTimeout(typeT);if(window.speechSynthesis)speechSynthesis.cancel();if(dlg){$('.say',dlg).classList.remove('typing','talking');$('.pst img',dlg).classList.remove('talk')}}
+  if(i<text.length){typeT=setTimeout(step,delay)}else{box.classList.remove('typing');typeT=setTimeout(()=>{box.classList.remove('talking');if(av){av.classList.remove('talk');if(av.pause)av.pause()}},500)}})()}
+function stopSay(){clearTimeout(typeT);if(voiceAu)voiceAu.pause();if(window.speechSynthesis)speechSynthesis.cancel();if(dlg){const av=$('.pst .av',dlg);$('.say',dlg).classList.remove('typing','talking');av.classList.remove('talk');av.pause()}}
 if(dlg){const sb=$('.snd',dlg);sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';
- sb.onclick=()=>{sndOn=!sndOn;localStorage.setItem('snd',sndOn?'1':'0');sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';if(!sndOn&&window.speechSynthesis)speechSynthesis.cancel()};
- $('.pst img',dlg).onclick=()=>say(HELLO,$('.say',dlg),$('.pst img',dlg),true)}
+ sb.onclick=()=>{sndOn=!sndOn;localStorage.setItem('snd',sndOn?'1':'0');sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';if(!sndOn&&voiceAu)voiceAu.pause()};
+ $('.pst .av',dlg).onclick=()=>say(HELLO,$('.say',dlg),$('.pst .av',dlg),true)}
 /* подсказка у кнопки: один раз через 5 секунд */
 const pis=$('.pis');
 if(pis&&dlg&&!sessionStorage.getItem('pbub')){const b=document.createElement('div');b.className='pbub';b.setAttribute('aria-hidden','true');b.innerHTML='<span class="tx"></span>';pis.parentElement.append(b);
  setTimeout(()=>{if(dlg.classList.contains('on'))return;sessionStorage.setItem('pbub','1');b.classList.add('on');const im=$('img',pis),t=b.querySelector('.tx');let i=0;im.classList.add('talk');
-  (function s(){t.textContent=HELLO.slice(0,++i);if(i<HELLO.length)setTimeout(s,34);else{im.classList.remove('talk');setTimeout(()=>b.classList.remove('on'),4500)}})()},5000)}
+  (function s(){t.textContent=HELLO.slice(0,++i);if(i<HELLO.length)setTimeout(s,70);else{im.classList.remove('talk');setTimeout(()=>b.classList.remove('on'),4500)}})()},5000)}

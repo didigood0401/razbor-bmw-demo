@@ -523,3 +523,4 @@ header.solid .hd .ask:hover,.chs button:hover,.ea button:hover,.ea a:hover,.arr 
 .pbub.on{opacity:1;transform:none}
 @media (max-width:640px){.pbub{display:none}}
 @media (prefers-reduced-motion:reduce){.dots .pis img,.talk,.wv i,.say.typing .tx::after{animation:none!important}}
+.dlg .pst .av{width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid var(--signal);background:#111;flex:none;cursor:pointer;transform-origin:50% 90%}
