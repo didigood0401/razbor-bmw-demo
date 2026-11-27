@@ -48,7 +48,7 @@ if(dlg){
   <button class="btn btn-d" type="submit">Отправить вопрос мастеру</button>
  </form>
  <div class="done" role="status"></div>
- <p class="src">Демо: заявка соберётся в текст со ссылкой на страницу. В боевой версии уйдёт в Telegram, MAX, на почту и в WordPress.</p>`;
+ <p class="src">Демо: заявка соберётся в текст со ссылкой на страницу.</p>`;
 }
 const F=()=>$('form.cb',dlg);
 function setVia(v){via=v;$$('.via button',dlg).forEach(b=>b.classList.toggle('on',b.dataset.v===v));const ph=$('.ph',dlg);ph.hidden=v!=='Перезвонить';$('input',ph).required=v==='Перезвонить'}

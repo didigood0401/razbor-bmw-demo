@@ -479,3 +479,6 @@ footer a:hover{color:var(--ink);text-decoration:underline;text-decoration-color:
  .hero h1 b::after{transform:none}
  .steps::after{transition:none}
 }
+/* без декора */
+.steps::after{box-shadow:none}.score .st,.rc .st{text-shadow:none}.dots .pis::after{display:none}.hero h1 b::after{display:none}
+button.rc{text-align:left;font:inherit;cursor:pointer}a.rc,button.rc{display:block;transition:border-color .3s}.rc b{font-size:20px;font-weight:500}.rc span{margin-top:10px;font-weight:500;color:var(--ink);border-bottom:2px solid var(--signal);display:inline-block}
