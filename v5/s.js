@@ -91,18 +91,18 @@ document.addEventListener('click',e=>{if(!hd.contains(e.target)||e.target.closes
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hd.classList.contains('menu-open')){toggleMenu(false);burger.focus()}});
 matchMedia('(max-width:1100px)').addEventListener('change',()=>toggleMenu(false));
 /* Поршень говорит: живая запись приветствия, анимация персонажа, печать текста */
-const HELLO='Привет! Чем помочь?';const VOICE_SPEED=1.85;
+const HELLO='Привет! Чем помочь?';const VOICE_SPEED=1,CLIP_SPEED=1.6;
 const reduced=RM;
 let sndOn=localStorage.getItem('snd')!=='0',typeT=0,voiceAu=null;
-function getAu(){if(!voiceAu){voiceAu=new Audio('../final/welcome.mp3');voiceAu.preload='auto'}return voiceAu}
-function fallbackTTS(text){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.5;s.pitch=2;speechSynthesis.speak(s)}catch(e){}}
-function playClip(el){if(el&&el.play){el.currentTime=0;el.playbackRate=VOICE_SPEED;el.play().catch(()=>{})}}
+function getAu(){if(!voiceAu){voiceAu=new Audio('hello-toon.wav');voiceAu.preload='auto'}return voiceAu}
+function fallbackTTS(text){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.4;s.pitch=1.6;speechSynthesis.speak(s)}catch(e){}}
+function playClip(el){if(el&&el.play){el.currentTime=0;el.playbackRate=CLIP_SPEED;el.play().catch(()=>{})}}
 function say(text,box,av,voice){
  const tx=box.querySelector('.tx');clearTimeout(typeT);tx.textContent='';
  if(voiceAu)voiceAu.pause();
  if(reduced){tx.textContent=text;return}
  let delay=60;
- if(voice&&sndOn){const a=getAu();a.currentTime=0;a.preservesPitch=false;a.mozPreservesPitch=false;a.webkitPreservesPitch=false;a.playbackRate=VOICE_SPEED;const dur=(isFinite(a.duration)&&a.duration>0?a.duration:2.2)/VOICE_SPEED;delay=Math.max(40,dur*880/text.length);
+ if(voice&&sndOn){const a=getAu();a.currentTime=0;a.preservesPitch=false;a.mozPreservesPitch=false;a.webkitPreservesPitch=false;a.playbackRate=VOICE_SPEED;const dur=(isFinite(a.duration)&&a.duration>0?a.duration:1.2)/VOICE_SPEED;delay=Math.max(40,dur*880/text.length);
   const p=a.play();if(p&&p.catch)p.catch(()=>fallbackTTS(text))}
  box.classList.add('typing','talking');if(av){av.classList.add('talk');if(av.play)playClip(av)}
  let i=0;(function step(){tx.textContent=text.slice(0,++i);
