@@ -91,7 +91,7 @@ document.addEventListener('click',e=>{if(!hd.contains(e.target)||e.target.closes
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hd.classList.contains('menu-open')){toggleMenu(false);burger.focus()}});
 matchMedia('(max-width:1100px)').addEventListener('change',()=>toggleMenu(false));
 /* Поршень говорит: печатает фразу, шевелится и озвучивает */
-const HELLO='Привет! Чем помочь?';
+const HELLO='Привет! Чем помочь?';if(window.speechSynthesis)speechSynthesis.getVoices();
 const reduced=RM;
 let sndOn=localStorage.getItem('snd')!=='0',typeT=0;
 function say(text,box,img,voice){
@@ -100,8 +100,8 @@ function say(text,box,img,voice){
  if(reduced){tx.textContent=text;return}
  box.classList.add('typing','talking');if(img)img.classList.add('talk');
  let i=0;(function step(){tx.textContent=text.slice(0,++i);
-  if(i<text.length){typeT=setTimeout(step,45)}else{box.classList.remove('typing');typeT=setTimeout(()=>{box.classList.remove('talking');if(img)img.classList.remove('talk')},350)}})();
- if(voice&&sndOn&&window.speechSynthesis){try{const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.02;s.pitch=1.15;speechSynthesis.speak(s)}catch(e){}}}
+  if(i<text.length){typeT=setTimeout(step,34)}else{box.classList.remove('typing');typeT=setTimeout(()=>{box.classList.remove('talking');if(img)img.classList.remove('talk')},350)}})();
+ if(voice&&sndOn&&window.speechSynthesis){try{const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.3;s.pitch=1.8;s.volume=1;const vs=speechSynthesis.getVoices().filter(v=>/^ru/i.test(v.lang));const vv=vs.find(v=>/milena|alena|google|female|ирина|irina|светлана|svetlana/i.test(v.name))||vs[0];if(vv)s.voice=vv;speechSynthesis.speak(s)}catch(e){}}}
 function stopSay(){clearTimeout(typeT);if(window.speechSynthesis)speechSynthesis.cancel();if(dlg){$('.say',dlg).classList.remove('typing','talking');$('.pst img',dlg).classList.remove('talk')}}
 if(dlg){const sb=$('.snd',dlg);sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';
  sb.onclick=()=>{sndOn=!sndOn;localStorage.setItem('snd',sndOn?'1':'0');sb.textContent=sndOn?'Звук: вкл':'Звук: выкл';if(!sndOn&&window.speechSynthesis)speechSynthesis.cancel()};
@@ -110,4 +110,4 @@ if(dlg){const sb=$('.snd',dlg);sb.textContent=sndOn?'Звук: вкл':'Звук
 const pis=$('.pis');
 if(pis&&dlg&&!sessionStorage.getItem('pbub')){const b=document.createElement('div');b.className='pbub';b.setAttribute('aria-hidden','true');b.innerHTML='<span class="tx"></span>';pis.parentElement.append(b);
  setTimeout(()=>{if(dlg.classList.contains('on'))return;sessionStorage.setItem('pbub','1');b.classList.add('on');const im=$('img',pis),t=b.querySelector('.tx');let i=0;im.classList.add('talk');
-  (function s(){t.textContent=HELLO.slice(0,++i);if(i<HELLO.length)setTimeout(s,45);else{im.classList.remove('talk');setTimeout(()=>b.classList.remove('on'),4500)}})()},5000)}
+  (function s(){t.textContent=HELLO.slice(0,++i);if(i<HELLO.length)setTimeout(s,34);else{im.classList.remove('talk');setTimeout(()=>b.classList.remove('on'),4500)}})()},5000)}
