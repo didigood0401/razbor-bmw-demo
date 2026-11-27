@@ -91,12 +91,12 @@ document.addEventListener('click',e=>{if(!hd.contains(e.target)||e.target.closes
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&hd.classList.contains('menu-open')){toggleMenu(false);burger.focus()}});
 matchMedia('(max-width:1100px)').addEventListener('change',()=>toggleMenu(false));
 /* Поршень говорит: живая запись приветствия, анимация персонажа, печать текста */
-const HELLO='Привет! Чем помочь?';const VOICE_SPEED=1.45;
+const HELLO='Привет! Чем помочь?';const VOICE_SPEED=1.85;
 const reduced=RM;
 let sndOn=localStorage.getItem('snd')!=='0',typeT=0,voiceAu=null;
 function getAu(){if(!voiceAu){voiceAu=new Audio('../final/welcome.mp3');voiceAu.preload='auto'}return voiceAu}
 function fallbackTTS(text){if(!window.speechSynthesis)return;try{speechSynthesis.cancel();const s=new SpeechSynthesisUtterance(text);s.lang='ru-RU';s.rate=1.5;s.pitch=2;speechSynthesis.speak(s)}catch(e){}}
-function playClip(el){if(el&&el.play){el.currentTime=0;el.playbackRate=1.4;el.play().catch(()=>{})}}
+function playClip(el){if(el&&el.play){el.currentTime=0;el.playbackRate=VOICE_SPEED;el.play().catch(()=>{})}}
 function say(text,box,av,voice){
  const tx=box.querySelector('.tx');clearTimeout(typeT);tx.textContent='';
  if(voiceAu)voiceAu.pause();
