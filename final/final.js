@@ -12,7 +12,7 @@ const routes = {
   partner: ['Заявка от СТО', 'partner.html', 'Снятый ДВС или автомобиль? Что уже проверено?'],
   machining: ['Мехобработка', 'machining.html', 'Какую деталь нужно обработать?'],
   install: ['Установка ДВС', 'install.html', 'Двигатель уже куплен? Уточните модель автомобиля.'],
-  gearbox: ['Подбор АКПП', 'gearbox.html', 'Укажите маркировку коробки или модель и год автомобиля.']
+  gearbox: ['Ремонт и подбор АКПП', 'gearbox.html', 'Укажите маркировку коробки или модель и год автомобиля.']
 };
 const assistant = $('#assistant');
 const conversation = $('#conversation');
@@ -101,10 +101,25 @@ function questions() {
   const hint=topic.includes('гарантии')?'По какому мотору, детали или виду ремонта уточнить срок и условия?':buyoutHints[item]||routes[intent][2];
   const detailLabel=field('Что нужно мастеру знать?','details',details,hint,true);
   detailLabel.lastChild.required=true;
+  const channelLabel=make('label','Как вам ответить?');
+  const channel=make('select');
+  for(const option of ['Выберу мессенджер','Перезвонить мне','MAX','Telegram','WhatsApp']) channel.append(new Option(option,option));
+  if(['MAX','Telegram','WhatsApp'].includes(preferred)) channel.value=preferred;
+  channelLabel.append(channel);
+  const phoneLabel=field('Номер для обратного звонка','callback','','+7…');
+  const phone=phoneLabel.lastChild;
+  phone.type='tel';phone.autocomplete='tel';phone.maxLength=22;
+  function toggleCallback() {
+    phoneLabel.hidden=channel.value!=='Перезвонить мне';phone.disabled=phoneLabel.hidden;phone.required=!phone.disabled;
+  }
+  channel.onchange=toggleCallback;toggleCallback();
+  phone.oninput=()=>phone.setCustomValidity('');
   const submit=make('button','Собрать обращение →','btn');submit.type='submit';
-  form.append(modelLabel,detailLabel,submit);conversation.append(form,button('← К выбору задачи',start));
+  form.append(modelLabel,detailLabel,channelLabel,phoneLabel,submit);conversation.append(form,button('← К выбору задачи',start));
   form.onsubmit=e=>{e.preventDefault();model=form.elements.model.value.trim();details=form.elements.details.value.trim();if(!details){form.elements.details.focus();return;}
-    makeDraft([topic||routes[intent][0],model,details]);result();};
+    if(!phone.disabled && phone.value.replace(/\D/g,'').length<7){phone.setCustomValidity('Проверьте номер телефона.');phone.reportValidity();return;}
+    preferred=channel.value==='Перезвонить мне'?'Звонок':channel.value;
+    makeDraft([topic||routes[intent][0],model,details,phone.disabled?'':'Перезвоните мне: '+phone.value]);result();};
 }
 function sourceUrl() {return location.protocol==='file:'?'https://didigood0401.github.io/razbor-bmw-demo/final/'+(location.pathname.split('/').pop()||'index.html')+location.search:location.origin+location.pathname+location.search;}
 function makeDraft(lines) {
