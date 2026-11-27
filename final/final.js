@@ -25,7 +25,6 @@ function dismissWelcome() {
   if (!welcome || welcome.hidden) return;
   welcome.hidden = true;
   $('video', welcome).pause();
-  greetingAudio?.pause();
 }
 motionPreference.addEventListener('change', event => {
   if(event.matches) $('video',assistant).pause();
@@ -319,33 +318,41 @@ function showWelcome() {
     movie.src = 'piston.mp4';
     movie.play().catch(() => {});
   }
-  greetingAudio = new Audio('welcome.mp3');
-  const sound = $('.welcome-sound', welcome);
-  function playGreeting() {
-    greetingAudio.currentTime = 0;
-    return greetingAudio.play().then(() => {
-      sound.textContent = 'Повторить приветствие';
-      $('.welcome-status', welcome).textContent = '';
+  const listeners = new AbortController();
+  const options = {capture:true, signal:listeners.signal};
+  let attempting = false;
+  const playGreeting = event => {
+    if (attempting || document.hidden || event?.target?.closest?.('.welcome-close')) return;
+    if (event?.type==='keydown' && (event.repeat || !['Enter',' '].includes(event.key))) return;
+    attempting = true;
+    greetingAudio.play().then(() => listeners.abort()).catch(error => {
+      attempting = false;
+      if (error.name !== 'NotAllowedError') listeners.abort();
     });
-  }
-  sound.onclick = () => playGreeting().catch(() => {
-    $('.welcome-status', welcome).textContent = 'Не удалось включить звук. Попробуйте ещё раз.';
-  });
+  };
+  // Browsers with an autoplay restriction can start the same clip on the first interaction.
+  for (const type of ['pointerup','click','keydown']) document.addEventListener(type,playGreeting,options);
+  document.addEventListener('visibilitychange',playGreeting,{signal:listeners.signal});
+  function stopGreeting() { listeners.abort(); greetingAudio.pause(); }
   $('.welcome-close', welcome).onclick = () => {
+    stopGreeting();
     dismissWelcome();
     $('.robot-launch').focus({preventScroll: true});
   };
-  window.addEventListener('pagehide', dismissWelcome, {once: true});
-  playGreeting().catch(() => {});
+  window.addEventListener('pagehide', () => {stopGreeting();dismissWelcome();}, {once: true});
+  playGreeting();
 }
 
 function playIntro() {
   const intro = $('#ignition');
   if (!intro || location.hash) return;
   try {
-    if (sessionStorage.getItem('bmw-intro-v1')) return;
-    sessionStorage.setItem('bmw-intro-v1', '1');
+    const navigation = performance.getEntriesByType('navigation')[0];
+    if (sessionStorage.getItem('bmw-intro-v2') && navigation?.type !== 'reload') return;
+    sessionStorage.setItem('bmw-intro-v2', '1');
   } catch {}
+  greetingAudio = new Audio('welcome.mp3?v=piston-voice-4');
+  greetingAudio.preload = 'auto';
   if (motionPreference.matches) {
     showWelcome();
     return;
