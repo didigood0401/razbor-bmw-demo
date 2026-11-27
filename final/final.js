@@ -55,6 +55,7 @@ function openAssistant() {
   if (assistant.open) return;
   sourceFocus = document.activeElement;
   if (welcome?.contains(sourceFocus)) sourceFocus = $('.robot-launch');
+  if (sourceFocus?.closest('.master-contact')) sourceFocus = $('.master-contact summary');
   dismissWelcome();
   assistant.showModal(); document.body.classList.add('modal-open');
   if (!motionPreference.matches) {const movie=$('video',assistant); movie.currentTime=0; movie.play().catch(()=>{});}
@@ -220,6 +221,28 @@ if($('#review-body')){
     const submit=make('button','Предпросмотр отзыва','btn');f.append(name,message,submit);area.replaceChildren(f);f.onsubmit=e=>{e.preventDefault();area.replaceChildren(make('b',f.elements.name.value),make('p',f.elements.text.value),make('small','Предпросмотр. Публикация на рабочем сайте — после модерации.'));};};
 }
 const maxContact = $('[data-max-contact]');
+const contactMenu = $('.master-contact');
+const contactToggle = $('summary', contactMenu);
+contactMenu.addEventListener('toggle', () => {
+  if (contactMenu.open) {
+    dismissWelcome();
+    track('contact_menu_open');
+  }
+});
+document.addEventListener('click', event => {
+  if (contactMenu.open && (!contactMenu.contains(event.target) || event.target.closest('.contact-panel a'))) {
+    contactMenu.open = false;
+  }
+});
+contactMenu.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && contactMenu.open) {
+    contactMenu.open = false;
+    contactToggle.focus();
+  }
+});
+contactMenu.addEventListener('focusout', event => {
+  if (event.relatedTarget && !contactMenu.contains(event.relatedTarget)) contactMenu.open = false;
+});
 maxContact.onclick = () => {
   reset(); openAssistant(); display('Написать в MAX');
   conversation.append(make('p','Найдите сервис в MAX по рабочему номеру +7 916 701-63-93. Вопрос по машине можно подготовить здесь.'));
